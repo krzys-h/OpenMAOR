@@ -7,7 +7,7 @@
 #define BAUD 57600
 
 // http://hobby.abxyz.bplaced.net/index.php?pid=4&aid=8
-void uart_init()
+void uart_init(bool interrupts)
 {
     // Ustalamy predkosc transmisji
     unsigned int ubbr = (F_CPU)/(BAUD*16UL)-1;
@@ -16,6 +16,11 @@ void uart_init()
 
     // Odpalamy nadajnik i odbiornik
     UCSRB = (1<<RXEN) | (1<<TXEN);
+
+    if(interrupts) {
+        // Włączamy przerwania odbiornika
+        UCSRB |= (1<<RXCIE);
+    }
 
     // Format ramki: 8 bitów danych, 1 bit stopu, brak bitu parzystości
     // Teoretycznie taki powinien byc domyślnie, ale na wszelki wypadek ustawiamy

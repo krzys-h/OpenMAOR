@@ -14,7 +14,7 @@ const static void (*program_main)(void) __attribute__((noreturn)) = 0;
 volatile bool exit_bootloader = false;
 int main()
 {
-    uart_init();
+    uart_init(false);
 
     DDRA |= _BV(0);
     PORTA &= ~(_BV(0));
@@ -29,6 +29,7 @@ int main()
     }
     eeprom_busy_wait();
     programming_busy_wait();
+    while(!(UCSRA & (1<<UDRE))); // Czekamy na koniec transmisji UART
 
     program_main();
 }

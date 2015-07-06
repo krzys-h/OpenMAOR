@@ -11,7 +11,7 @@ project(OpenMAOR C CXX)
 # Pliki źródłowe
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src")
 
-file(GLOB COMMON_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/common/*.cpp")
+file(GLOB COMMON_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/common/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/src/peripherals/*.cpp")
 add_library(${PROJECT_NAME}-common OBJECT ${COMMON_SRC})
 
 file(GLOB FRAMEWORK_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/framework/*.cpp")

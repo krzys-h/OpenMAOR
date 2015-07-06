@@ -1,6 +1,13 @@
-#include "jump_bootloader.h"
+#include <avr/io.h>
+#include "framework/framework.h"
 
 int main()
 {
-    jump_bootloader();
+    framework_init();
+    while(true) {
+        set_led(0, true);
+        delay_ms(500);
+        set_led(0, false);
+        delay_ms(500);
+    }
 }

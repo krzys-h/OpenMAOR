@@ -7,7 +7,7 @@ include("${CMAKE_CURRENT_SOURCE_DIR}/../AVR.cmake")
 
 project(OpenMAOR-sample-program C CXX)
 
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../src/common" "${CMAKE_CURRENT_SOURCE_DIR}/../src/framework")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../src")
 
 file(GLOB SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 add_executable(${PROJECT_NAME}.elf ${SRC_FILES})
