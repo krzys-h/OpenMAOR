@@ -1,0 +1,1 @@
+void process_uart_byte(uint8_t byte);
