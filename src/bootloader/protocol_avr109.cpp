@@ -30,10 +30,8 @@ void avr109_byte_recieved(uint8_t cmd)
     } else if(cmd == 'p') { // programmer type
         uart_write('S'); // serial
     } else if(cmd == 'P') { // enter programming
-        PORTA |= _BV(0);
         uart_write('\r');
     } else if(cmd == 'L') { // leave programming
-        PORTA &= ~(_BV(0));
         uart_write('\r');
     } else if(cmd == 't') {
         uart_write(PROG_TYPE);
@@ -77,8 +75,6 @@ void avr109_byte_recieved(uint8_t cmd)
         uint8_t memtype = uart_read();
 
         if(memtype == 'F') {
-            PORTA &= ~(_BV(0));
-
             uint8_t* tmp = page_buffer;
             for (uint8_t cnt = 0; cnt < SPM_PAGESIZE; cnt++) {
                 *tmp++ = (cnt < size) ? uart_read() : 0xFF;
@@ -86,16 +82,12 @@ void avr109_byte_recieved(uint8_t cmd)
 
             flash_program_page(avr109_address << 1);
             avr109_address += size/2;
-
-            PORTA |= _BV(0);
         } else if(memtype == 'E') {
-            PORTA &= ~(_BV(0));
             do {
                 eeprom_update_byte((uint8_t*)avr109_address, uart_read());
                 avr109_address++;
                 size--;
             } while(size > 0);
-            PORTA |= _BV(0);
         }
         uart_write('\r');
     } else if(cmd == 'e') {
@@ -104,7 +96,6 @@ void avr109_byte_recieved(uint8_t cmd)
     } else if(cmd == 'E') { // return to program
         exit_bootloader = true;
         uart_write('\r');
-        _delay_ms(50);
     } else {
         uart_write('?');
     }

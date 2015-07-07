@@ -10,7 +10,6 @@ void sparta_send_status(SpartaCommand command, uint8_t data[12]);
 
 void sparta_byte_recieved(uint8_t byte)
 {
-    PORTA |= _BV(0);
     uint8_t sparta_msg_type = byte;
     uint8_t sparta_robot_id = uart_read();
     uint8_t sparta_command = uart_read();
@@ -20,7 +19,6 @@ void sparta_byte_recieved(uint8_t byte)
         return;
 
     if(sparta_msg_type == SPARTA_HEADER) {
-        PORTA &= ~(_BV(0));
         sparta_process_message((SpartaCommand)sparta_command, sparta_param);
     } else if(sparta_msg_type == SPARTA_HEADER_STATUS) {
         sparta_process_message_status(sparta_command, sparta_param);
