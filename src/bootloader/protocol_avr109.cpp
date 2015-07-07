@@ -2,6 +2,7 @@
 #include <avr/boot.h>
 #include <avr/pgmspace.h>
 #include <avr/eeprom.h>
+#include <util/delay.h>
 #include "platform.h"
 #include "common/uart.h"
 #include "bootloader/flash_prog.h"
@@ -103,6 +104,7 @@ void avr109_byte_recieved(uint8_t cmd)
     } else if(cmd == 'E') { // return to program
         exit_bootloader = true;
         uart_write('\r');
+        _delay_ms(50);
     } else {
         uart_write('?');
     }

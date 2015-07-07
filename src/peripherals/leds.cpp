@@ -80,3 +80,11 @@ bool get_led(unsigned int led)
     }
     return false;
 }
+
+void set_leds(bool led0, bool led1, bool led2, bool led3)
+{
+    set_led(0, led0);
+    set_led(1, led1);
+    set_led(2, led2);
+    set_led(3, led3);
+}

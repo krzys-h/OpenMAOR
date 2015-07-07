@@ -1,3 +1,2 @@
-#include "peripherals/leds.h"
-
 void peripherals_init();
+void peripherals_stop();
