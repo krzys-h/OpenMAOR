@@ -1,60 +1,77 @@
-#include <avr/io.h>
 #include "common/protocol_sparta.h"
-#include "platform.h"
 #include "common/uart.h"
+#include "common/remote_command.h"
 
-void sparta_process_message(SpartaCommand command, uint8_t param);
-void sparta_process_message_status(uint8_t motor_left, uint8_t motor_right);
-void sparta_send(SpartaCommand command, uint8_t param);
-void sparta_send_status(SpartaCommand command, uint8_t data[12]);
-
-void sparta_byte_recieved(uint8_t byte)
+bool CProtocolSparta::RecieveData(uint8_t data)
 {
-    uint8_t sparta_msg_type = byte;
-    uint8_t sparta_robot_id = uart_read();
-    uint8_t sparta_command = uart_read();
-    uint8_t sparta_param = uart_read();
-
-    if(sparta_robot_id != ROBOT_ID && sparta_robot_id != BROADCAST_ID)
-        return;
-
-    if(sparta_msg_type == SPARTA_HEADER) {
-        sparta_process_message((SpartaCommand)sparta_command, sparta_param);
-    } else if(sparta_msg_type == SPARTA_HEADER_STATUS) {
-        sparta_process_message_status(sparta_command, sparta_param);
+    if (m_buffer.Size() == 0)
+    {
+        if (data != SPARTA_HEADER && data != SPARTA_HEADER_STATUS)
+            return false;
     }
+    m_buffer.Add(data);
+    if (m_buffer.Size() == 4)
+    {
+        ProcessPacket(static_cast<SpartaProtocolType>(m_buffer[0]), static_cast<SpartaRobotID>(m_buffer[1]), m_buffer[2], m_buffer[3]);
+        m_buffer.Flush();
+        return false;
+    }
+    return true;
 }
 
-void sparta_process_message(SpartaCommand command, uint8_t param)
+void CProtocolSparta::ProcessPacket(SpartaProtocolType protocol, SpartaRobotID robotid, uint8_t data1, uint8_t data2)
 {
-    switch(command) {
+    // Sprawdzanie robotid pomijamy (na co nam to? :P)
+
+    switch (protocol)
+    {
+        case SPARTA_HEADER:
+            ProcessPacketNormal(static_cast<SpartaCommand>(data1), data2);
+            break;
+
+        case SPARTA_HEADER_STATUS:
+            ProcessPacketStatus(data1, data2);
+            break;
+
+        default:
+            assert(false);
+    }
+}
+void CProtocolSparta::ProcessPacketNormal(SpartaCommand cmd, uint8_t param)
+{
+    switch (cmd)
+    {
         case CMD_ZWROC_SWOJE_ID:
-        case CMD_ODBIERZ_NOWE_ID: // Nie obslugujemy zmiany ID, mówimy komputerowi że zmienił na to samo
-            sparta_send(CMD_ZWRACAM_ID, ROBOT_ID);
+        case CMD_ODBIERZ_NOWE_ID: // Nie obslugujemy ID
+            SendPacketNormal(CMD_ZWRACAM_ID, BROADCAST_ID);
             break;
 
         case CMD_FIRMWARE_VER:
-            sparta_send(CMD_FIRMWARE_VER, SPARTA_VERSION_FIRMWARE);
+            SendPacketNormal(CMD_FIRMWARE_VER, SPARTA_VERSION_FIRMWARE);
             break;
 
         case CMD_HARDWARE_VER:
-            sparta_send(CMD_HARDWARE_VER, SPARTA_VERSION_HARDWARE);
+            SendPacketNormal(CMD_HARDWARE_VER, SPARTA_VERSION_HARDWARE);
             break;
 
         case CMD_SILNIK_LEWY:
-            //TODO
+            m_command->SetLeftEngine(((static_cast<float>(param)-100) / 100));
             break;
 
         case CMD_SILNIK_PRAWY:
-            //TODO
+            m_command->SetRightEngine(((static_cast<float>(param)-100) / 100));
             break;
 
         case CMD_SILNIK_STOP:
-            //TODO
+            m_command->SetLeftEngine(0.0f);
+            m_command->SetRightEngine(0.0f);
             break;
 
         case CMD_LED:
-            //TODO
+            m_command->SetLED(0, param & (1<<0));
+            m_command->SetLED(1, param & (1<<1));
+            m_command->SetLED(2, param & (1<<2));
+            m_command->SetLED(3, param & (1<<3));
             break;
 
         case CMD_ZAMKNIJ_CHWYTAK:
@@ -63,33 +80,32 @@ void sparta_process_message(SpartaCommand command, uint8_t param)
             break;
 
         case CMD_STAN_BATERII:
-            //TODO
-            sparta_send(CMD_STAN_BATERII, 0xFF);
+            SendPacketNormal(CMD_STAN_BATERII, m_command->GetBatteryStatus());
             break;
 
         case CMD_STAN_CZ_LINII:
-            //TODO
-            sparta_send(CMD_STAN_CZ_LINII, 0x00);
+            SendPacketNormal(CMD_STAN_CZ_LINII,
+                (m_command->GetLineSensor(0) << 0) |
+                (m_command->GetLineSensor(1) << 1) |
+                (m_command->GetLineSensor(2) << 2) |
+                (m_command->GetLineSensor(3) << 3)
+            );
             break;
 
         case CMD_STAN_PRAD_L:
-            //TODO
-            sparta_send(CMD_STAN_PRAD_L, 0xFF);
+            SendPacketNormal(CMD_STAN_PRAD_L, m_command->GetLeftEnginePower());
             break;
 
         case CMD_STAN_PRAD_R:
-            //TODO
-            sparta_send(CMD_STAN_PRAD_R, 0xFF);
+            SendPacketNormal(CMD_STAN_PRAD_R, m_command->GetRightEnginePower());
             break;
 
         case CMD_STAN_SONAR_L:
-            //TODO
-            sparta_send(CMD_STAN_SONAR_L, 0x00);
+            SendPacketNormal(CMD_STAN_SONAR_L, m_command->GetLeftSonar());
             break;
 
         case CMD_STAN_SONAR_R:
-            //TODO
-            sparta_send(CMD_STAN_SONAR_R, 0x00);
+            SendPacketNormal(CMD_STAN_SONAR_R, m_command->GetRightSonar());
             break;
 
         // Nie obslugujemy wgrywania programu ze SPAR-TA (jeszcze)
@@ -102,64 +118,87 @@ void sparta_process_message(SpartaCommand command, uint8_t param)
         case CMD_ROZKAZ_USTAW_ADRES_H:
         case CMD_ROZKAZ_USTAW_ADRES_L:
         case CMD_ROZKAZ_ODBIERZ_BAJT:
-            sparta_send(CMD_ERROR_MAX_PGM_SIZE_EXCEEDED, 0x00);
-            sparta_send(CMD_CRC_ERROR, 0x00);
+            SendPacketNormal(CMD_ERROR_MAX_PGM_SIZE_EXCEEDED, 0x00);
+            SendPacketNormal(CMD_CRC_ERROR, 0x00);
             break;
 
         case CMD_ROZKAZ_AKTYWACJA:
-            //TODO
-            //exit_bootloader = true;
+            m_command->StartProgram();
             break;
 
         case CMD_ROZKAZ_DEAKTYWACJA:
-            //TODO
+            m_command->StopProgram();
             break;
 
         default:
-            break;
+            assert_failed("Nieznana komenda SPAR-TA");
     }
 }
 
-void sparta_process_message_status(uint8_t motor_left, uint8_t motor_right)
+void CProtocolSparta::ProcessPacketStatus(uint8_t motorLeft, uint8_t motorRight)
 {
-    if(motor_left != SPARTA_STATUS_NO_MOTOR_CHANGE) { /* TODO */ }
-    if(motor_right != SPARTA_STATUS_NO_MOTOR_CHANGE) { /* TODO */ }
+    if (motorLeft != SPARTA_STATUS_NO_MOTOR_CHANGE)
+    {
+        m_command->SetLeftEngine((static_cast<float>(motorLeft)-100)/100);
+    }
+    if (motorRight != SPARTA_STATUS_NO_MOTOR_CHANGE)
+    {
+        m_command->SetRightEngine((static_cast<float>(motorLeft)-100)/100);
+    }
 
     uint8_t data[12];
-    data[0] = 0xFF; // napięcie baterii, TODO
-    data[1] = 0x00; // czujniki linii, TODO
-    data[2] = 0x00; // LEDy, TODO
-    data[3] = 0xFF; // napięcie lewego silnika, TODO
-    data[4] = 0xFF; // napięcie prawego silnika, TODO
-    data[5] = 0x00; // sonar lewy, TODO
-    data[6] = 0x00; // sonar prawy, TODO
-    data[7] = 0xFF; // ADC0 >> 2, TODO
-    data[8] = 0xFF; // ADC1 >> 2, TODO
-    data[9] = 0xFF; // ADC2 >> 2, TODO
-    data[10] = 0x00; // prędkość lewego silnika (-100% => 0, 0% => 100, 100% => 200), TODO
-    data[11] = 0x00; // prędkość prawego silnika (-100% => 0, 0% => 100, 100% => 200), TODO
+    data[0] = m_command->GetBatteryStatus();
+    data[1] =
+        (m_command->GetLineSensor(0) << 0) |
+        (m_command->GetLineSensor(1) << 1) |
+        (m_command->GetLineSensor(2) << 2) |
+        (m_command->GetLineSensor(3) << 3) ;
+    data[2] =
+        (m_command->GetLED(0) << 0) |
+        (m_command->GetLED(1) << 1) |
+        (m_command->GetLED(2) << 2) |
+        (m_command->GetLED(3) << 3) ;
+    data[3] = m_command->GetLeftEnginePower();
+    data[4] = m_command->GetRightEnginePower();
+    data[5] = m_command->GetLeftSonar();
+    data[6] = m_command->GetRightSonar();
+    data[7] = static_cast<uint8_t>(m_command->GetCustomADC(0) >> 2);
+    data[8] = static_cast<uint8_t>(m_command->GetCustomADC(1) >> 2);
+    data[9] = static_cast<uint8_t>(m_command->GetCustomADC(2) >> 2);
+    data[10] = static_cast<uint8_t>(m_command->GetLeftEngine()+100);
+    data[11] = static_cast<uint8_t>(m_command->GetRightEngine()+100);
 
-    sparta_send_status(CMD_STAN_CZUJNIKI, data);
+    SendPacketStatus(CMD_STAN_CZUJNIKI, data);
 }
 
-void sparta_send(SpartaCommand command, uint8_t param)
+void CProtocolSparta::SendPacketNormal(SpartaRobotID senderid, SpartaCommand cmd, uint8_t param)
 {
-    uart_write(SPARTA_HEADER);
-    uart_write(ROBOT_ID);
-    uart_write(command);
-    uart_write(param);
+    m_uart->Send(SPARTA_HEADER);
+    m_uart->Send(senderid);
+    m_uart->Send(cmd);
+    m_uart->Send(param);
 }
 
-void sparta_send_status(SpartaCommand command, uint8_t data[12])
+void CProtocolSparta::SendPacketStatus(SpartaRobotID senderid, SpartaCommand cmd, const uint8_t (&params)[12])
 {
-    uart_write(SPARTA_HEADER_STATUS);
-    uart_write(ROBOT_ID);
-    uart_write(command);
-    unsigned char checksum = 0;
-    for(unsigned char i = 0; i < 12; i++)
+    m_uart->Send(SPARTA_HEADER_STATUS);
+    m_uart->Send(senderid);
+    m_uart->Send(cmd);
+    uint8_t checksum = 0;
+    for(uint8_t i = 0; i < 12; i++)
     {
-        checksum += data[i];
-        uart_write(data[i]);
+        checksum += params[i];
+        m_uart->Send(params[i]);
     }
-    uart_write(checksum);
+    m_uart->Send(checksum);
+}
+
+void CProtocolSparta::SendPacketNormal(SpartaCommand cmd, uint8_t param)
+{
+    SendPacketNormal(BROADCAST_ID, cmd, param);
+}
+
+void CProtocolSparta::SendPacketStatus(SpartaCommand cmd, const uint8_t (&params)[12])
+{
+    SendPacketStatus(BROADCAST_ID, cmd, params);
 }

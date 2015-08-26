@@ -1,8 +1,6 @@
-void sparta_byte_recieved(uint8_t byte);
+#pragma once
 
-#define SPARTA_HEADER 0xFE
-#define SPARTA_HEADER_STATUS 0xFC
-#define BROADCAST_ID 0xFD
+#include "common/protocol_base.h"
 
 // Wersja hardware, TODO: co się stanie jeśli zmienimy?
 #define SPARTA_VERSION_HARDWARE 23
@@ -47,7 +45,15 @@ void sparta_byte_recieved(uint8_t byte);
 // 12 - ADC2 / 4
 // 13 - predkość silnika lewego
 // 14 - predkość silnika prawego
-// 15 - suma kontrolna (TODO: chyba dwa najbardziej znaczące bity sumy bajtów 3-14)
+// 15 - suma kontrolna (dwa najbardziej znaczące bity sumy bajtów 3-14)
+
+typedef uint8_t SpartaRobotID;
+#define BROADCAST_ID 0xFD
+
+enum SpartaProtocolType {
+    SPARTA_HEADER = 0xFE,
+    SPARTA_HEADER_STATUS = 0xFC,
+};
 
 enum SpartaCommand {
     // Sterowanie chwytakiem
@@ -74,7 +80,7 @@ enum SpartaCommand {
     CMD_CRC_OK = 214, // (nieobsługiwane)
     CMD_CRC_ERROR = 215, // (nieobsługiwane)
     CMD_ERROR_MAX_PGM_SIZE_EXCEEDED = 217, // (nieobsługiwane)
-    
+
     // Jakis NOP? Po co to?
     CMD_IGNORUJ_NASTEPNY_BAJT = 210, // (nieużywane)
 
@@ -108,4 +114,22 @@ enum SpartaCommand {
     // Informacje o wersji
     CMD_FIRMWARE_VER = 235, // K<->R, odpowiedź tym samym
     CMD_HARDWARE_VER = 236, // K<->R, odpowiedź tym samym
+};
+
+class CProtocolSparta : public CBufferedProtocol
+{
+public:
+    CProtocolSparta(CUart* uart, CRemoteCommandExecutor* command) : CBufferedProtocol(uart, command) {};
+
+    bool RecieveData(uint8_t byte);
+
+protected:
+    void ProcessPacket(SpartaProtocolType protocol, SpartaRobotID robotid, uint8_t data1, uint8_t data2);
+    void ProcessPacketNormal(SpartaCommand cmd, uint8_t param);
+    void ProcessPacketStatus(uint8_t param1, uint8_t param2);
+
+    void SendPacketNormal(SpartaRobotID senderid, SpartaCommand cmd, uint8_t param);
+    void SendPacketStatus(SpartaRobotID senderid, SpartaCommand cmd, const uint8_t (&params)[12]);
+    void SendPacketNormal(SpartaCommand cmd, uint8_t param);
+    void SendPacketStatus(SpartaCommand cmd, const uint8_t (&params)[12]);
 };

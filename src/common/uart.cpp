@@ -6,8 +6,12 @@
 #endif
 #define BAUD 57600
 
-// http://hobby.abxyz.bplaced.net/index.php?pid=4&aid=8
-void uart_init(bool interrupts)
+
+// =============================================================================
+
+template<> CUart* CSingleton<CUart>::m_instance = nullptr;
+
+CUart::CUart()
 {
     // Ustalamy predkosc transmisji
     unsigned int ubbr = (F_CPU)/(BAUD*16UL)-1;
@@ -17,24 +21,66 @@ void uart_init(bool interrupts)
     // Odpalamy nadajnik i odbiornik
     UCSRB = (1<<RXEN) | (1<<TXEN);
 
-    if(interrupts) {
-        // Włączamy przerwania odbiornika
-        UCSRB |= (1<<RXCIE);
-    }
+    // Włączamy przerwania odbiornika
+    UCSRB |= (1<<RXCIE);
 
     // Format ramki: 8 bitów danych, 1 bit stopu, brak bitu parzystości
     // Teoretycznie taki powinien byc domyślnie, ale na wszelki wypadek ustawiamy
     UCSRC = (1<<URSEL) | (3<<UCSZ0);
 }
 
-uint8_t uart_read()
+CUart::~CUart()
 {
-    while(!(UCSRA & (1<<RXC)));
-    return UDR;
 }
 
-void uart_write(uint8_t c)
+CLASS_ISR(CUart, USART_RXC_vect)
+{
+    ByteRecieved(UDR);
+}
+
+void CUart::WaitUntilSendingFinished()
 {
     while(!(UCSRA & (1<<UDRE)));
-    UDR = c;
+}
+
+void CUart::Send(uint8_t byte)
+{
+    // TODO: Wysyłanie na przerwaniach
+    WaitUntilSendingFinished();
+    UDR = byte;
+}
+
+//TODO: Wysyłanie z progmem
+void CUart::SendString(const char* string)
+{
+    while(*string != '\0')
+    {
+        Send(*string++);
+    }
+}
+
+// =============================================================================
+
+void CQueuedUart::ByteRecieved(uint8_t byte)
+{
+    m_queue.Add(byte);
+}
+
+uint8_t CQueuedUart::Recv()
+{
+    uint8_t x;
+    while(!m_queue.Get(x));
+    return x;
+}
+
+// =============================================================================
+
+CAsyncUart::CAsyncUart(RecvCallbackFunc recvCallback)
+: CUart()
+, m_callback(recvCallback)
+{}
+
+void CAsyncUart::ByteRecieved(uint8_t byte)
+{
+    m_callback(byte);
 }

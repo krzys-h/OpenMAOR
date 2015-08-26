@@ -1,67 +1,44 @@
-#include <avr/io.h>
-#include <avr/boot.h>
-#include <avr/pgmspace.h>
-#include <avr/eeprom.h>
-#include <avr/interrupt.h>
-#include <util/delay.h>
-#include "bootloader/main.h"
-#include "common/uart.h"
-#include "bootloader/flash_prog.h"
-#include "bootloader/protocol_avr109.h"
-#include "common/protocol_sparta.h"
-#include "peripherals/button.h"
 #include "peripherals/leds.h"
+#include "common/uart.h"
+#include "common/protocol_sparta.h"
+#include "bootloader/protocol_avr109.h"
+#include "common/protocols.h"
+#include "common/remote_command.h"
 
 const static void (*program_main)(void) __attribute__((noreturn)) = 0;
+
+void MoveInterrupts(bool in_bootloader)
+{
+    // Zostawiam tu ten komentarz na pamiątkę jak parę godzin się męczyłem że na ATMega32 to jest GICR a _nie_ MCUCR :D
+    GICR = (1 << IVCE);
+    GICR = (in_bootloader << IVSEL);
+    sei();
+}
+
+// TODO: To be extended with program saving/loading
+class CBootloaderRemoteCommandExecutor : public CRemoteCommandExecutor {};
 
 volatile bool exit_bootloader = false;
 int main()
 {
-    uart_init(false);
-    button_init(false);
+    // Przenosimy IVT do sekcji bootloadera
+    MoveInterrupts(true);
+
+    CQueuedUart uart;
+    CBootloaderRemoteCommandExecutor commandExecutor;
+    CProtocolSparta sparta(&uart, &commandExecutor);
+    CProtocolAVR109Bootloader avr109(&uart, &commandExecutor);
+    CProtocols protocols;
+    protocols.AddProtocol(&sparta);
+    protocols.AddProtocol(&avr109);
+
+    uart.SendString("\e[2J\e[H"); // czyszczenie terminala (+ kursor w lewy górny róg)
+    uart.SendString("Bootloader INIT!\r\n");
+
     leds_init();
-
-    bool force_bootloader = button_pressed();
-    if(force_bootloader) {
-        _delay_ms(50);
-        while(button_pressed());
-        _delay_ms(50);
+    set_leds(true, true, true, true);
+    while (true)
+    {
+        protocols.RecieveData(uart.Recv());
     }
-    
-    int led = 0;
-    while(!button_pressed()) {
-        if(UCSRA & (1<<RXC) || force_bootloader) {
-            set_leds(true, false, false, true);
-            while(!exit_bootloader) {
-                uint8_t data = uart_read();
-                if(data == SPARTA_HEADER || data == SPARTA_HEADER_STATUS) {
-                    sparta_byte_recieved(data);
-                } else {
-                    avr109_byte_recieved(data);
-                }
-            }
-            exit_bootloader = false;
-            led = 0;
-        }
-        force_bootloader = false;
-
-        switch(led) {
-            case 0: set_leds(true, false, false, false); break;
-            case 1: set_leds(false, true, false, false); break;
-            case 2: set_leds(false, false, false, true); break;
-            case 3: set_leds(false, false, true, false); break;
-        }
-        _delay_ms(100);
-        led++;
-        if(led >= 4) led = 0;
-    }
-    set_leds(false, false, false, false);
-    _delay_ms(50);
-    while(button_pressed());
-    _delay_ms(50);
-
-    eeprom_busy_wait();
-    programming_busy_wait();
-
-    program_main();
 }

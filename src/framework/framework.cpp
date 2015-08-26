@@ -8,8 +8,8 @@ void framework_init()
     peripherals_init();
     button_exit_init();
 
-    uart_init(true);
+    //uart_init(true);
     protocols_init();
-    
+
     sei(); // Włączamy przerwania
 }
