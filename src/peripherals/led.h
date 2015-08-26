@@ -11,7 +11,7 @@ class CRobot;
 class CLed {
 protected:
     friend class CRobot;
-    CLed(int id);
+    CLed(volatile uint8_t* ddr, volatile uint8_t* port, uint8_t bit);
 
 public:
     void Set(bool value);
@@ -19,5 +19,6 @@ public:
     void Toggle();
 
 protected:
-    int m_id;
+    volatile uint8_t* m_port;
+    uint8_t m_bit;
 };
