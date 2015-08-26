@@ -1,1 +1,0 @@
-volatile extern bool exit_bootloader;

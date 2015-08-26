@@ -4,6 +4,7 @@
 #include "common/protocols.h"
 #include "common/remote_command.h"
 #include "peripherals/robot.h"
+#include <avr/sleep.h>
 
 const static void (*program_main)(void) __attribute__((noreturn)) = 0;
 
@@ -15,20 +16,24 @@ void MoveInterrupts(bool in_bootloader)
     sei();
 }
 
-volatile bool exit_bootloader = false;
+CProtocols protocols;
+void RecieveHandler(uint8_t data)
+{
+    protocols.RecieveData(data);
+}
+
 int main()
 {
     // Przenosimy IVT do sekcji bootloadera
     MoveInterrupts(true);
 
     CRobot robot;
-    robot.led.Set(true, true, true, true);
+    robot.led.Set(false);
 
-    CQueuedUart uart;
+    CAsyncUart uart(RecieveHandler);
     CRemoteCommandExecutor commandExecutor(&robot);
     CProtocolSparta sparta(&uart, &commandExecutor);
     CProtocolAVR109Bootloader avr109(&uart, &commandExecutor);
-    CProtocols protocols;
     protocols.AddProtocol(&sparta);
     protocols.AddProtocol(&avr109);
 
@@ -37,6 +42,9 @@ int main()
 
     while (true)
     {
-        protocols.RecieveData(uart.Recv());
+        set_sleep_mode(SLEEP_MODE_IDLE);
+        sleep_enable();
+        sleep_cpu();
+        sleep_disable();
     }
 }
