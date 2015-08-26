@@ -1,2 +1,28 @@
-void button_init(bool interrupts = true);
-bool button_pressed();
+#pragma once
+#include "common/singleton.h"
+#include "common/class_isr.h"
+
+class CRobot;
+
+// TODO: CSingleton jest tu tylko dla ISR, nie da sie tego zrobic inaczej?
+
+/**
+ * \class CButton
+ * \brief A button! :D
+ */
+class CButton : public CSingleton<CButton> {
+protected:
+    friend class CRobot;
+    CButton();
+
+public:
+    bool Get();
+
+    typedef void(*ButtonCallback)();
+    void SetCallback(ButtonCallback callback);
+
+    DECLARE_CLASS_ISR(INT1_vect);
+
+protected:
+    ButtonCallback m_callback;
+};

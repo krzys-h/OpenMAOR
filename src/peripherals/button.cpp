@@ -1,25 +1,37 @@
+#include "peripherals/button.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#include "peripherals/button.h"
 
-#define BUTTON_CONFIG DDRD |= _BV(3); PORTD |= _BV(3)
-#define BUTTON_GET ((PIND & _BV(3)) == 0)
+template<> CButton* CSingleton<CButton>::m_instance = nullptr;
 
-void button_init(bool interrupts)
+CButton::CButton()
 {
-    BUTTON_CONFIG;
+    DDRD |= _BV(3);
+    PORTD |= _BV(3);
 
-    if(interrupts) {
-        // Enable INT1
-        GICR |= _BV(INT1);
+    // Enable INT1
+    GICR |= _BV(INT1);
 
-        // Trigger INT1 on falling edge
-        MCUCR |= _BV(ISC11);
-        MCUCR &= ~(_BV(ISC10));
-    }
+    // Trigger INT1 on falling edge
+    // TODO: Na pewno MCUCR? Czy moze GICR, jak z przekierowaniem IVT?
+    MCUCR |= _BV(ISC11);
+    MCUCR &= ~(_BV(ISC10));
 }
 
-bool button_pressed()
+bool CButton::Get()
 {
-    return BUTTON_GET;
+    return (PIND & _BV(3)) == 0;
+}
+
+void CButton::SetCallback(ButtonCallback callback)
+{
+    m_callback = callback;
+}
+
+CLASS_ISR(CButton, INT1_vect)
+{
+    if (m_callback != nullptr)
+    {
+        m_callback();
+    }
 }

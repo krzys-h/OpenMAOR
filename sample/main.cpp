@@ -1,9 +1,10 @@
 #include <avr/io.h>
 #include "framework/framework.h"
 
+CFramework framework;
+
 int main()
 {
-    framework_init();
     while(true) {
         set_led(0, true);
         delay_ms(500);

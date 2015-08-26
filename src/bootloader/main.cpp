@@ -1,9 +1,9 @@
-#include "peripherals/leds.h"
 #include "common/uart.h"
 #include "common/protocol_sparta.h"
 #include "bootloader/protocol_avr109.h"
 #include "common/protocols.h"
 #include "common/remote_command.h"
+#include "peripherals/robot.h"
 
 const static void (*program_main)(void) __attribute__((noreturn)) = 0;
 
@@ -24,6 +24,9 @@ int main()
     // Przenosimy IVT do sekcji bootloadera
     MoveInterrupts(true);
 
+    CRobot robot;
+    robot.led[0].Set(true);
+
     CQueuedUart uart;
     CBootloaderRemoteCommandExecutor commandExecutor;
     CProtocolSparta sparta(&uart, &commandExecutor);
@@ -35,8 +38,6 @@ int main()
     uart.SendString("\e[2J\e[H"); // czyszczenie terminala (+ kursor w lewy górny róg)
     uart.SendString("Bootloader INIT!\r\n");
 
-    leds_init();
-    set_leds(true, true, true, true);
     while (true)
     {
         protocols.RecieveData(uart.Recv());
