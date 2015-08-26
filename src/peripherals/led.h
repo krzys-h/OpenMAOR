@@ -43,7 +43,7 @@ protected:
     {}
 
 public:
-    CLed& operator[](int index)
+    CLed& operator[](uint8_t index)
     {
         return m_leds[index];
     }

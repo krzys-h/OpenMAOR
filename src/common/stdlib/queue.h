@@ -1,10 +1,12 @@
 #pragma once
 
+#include <stdint.h>
+
 /**
  * \class CQueue
  * \brief a FIFO queue
  */
-template<typename T, int SIZE> class CQueue
+template<typename T, uint8_t SIZE> class CQueue
 {
 public:
     CQueue()
@@ -40,7 +42,7 @@ public:
 
 protected:
     volatile T m_fifo[SIZE];
-    volatile int m_head;
-    volatile int m_tail;
-    volatile int m_total;
+    volatile uint8_t m_head;
+    volatile uint8_t m_tail;
+    volatile uint8_t m_total;
 };

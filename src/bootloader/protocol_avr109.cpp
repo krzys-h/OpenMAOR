@@ -6,7 +6,7 @@
 #include <avr/pgmspace.h>
 #include <avr/eeprom.h>
 
-int CProtocolAVR109Bootloader::GetParameterCount(AVR109Command command)
+uint8_t CProtocolAVR109Bootloader::GetParameterCount(AVR109Command command)
 {
     if (command == START_MEMORY_WRITE && m_buffer.Size() >= 4)
     {

@@ -34,7 +34,7 @@ public:
     CBufferedProtocol(CUart* uart, CRemoteCommandExecutor* command) : CProtocol(uart, command) {};
 
 public:
-    static const int MAX_PACKET_SIZE = 4 + SPM_PAGESIZE;
+    static const uint8_t MAX_PACKET_SIZE = 4 + SPM_PAGESIZE;
 
 protected:
     //! Recieved packet buffer

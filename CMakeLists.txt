@@ -26,7 +26,7 @@ add_custom_target(
 )
 add_custom_command(
     OUTPUT ${PROJECT_NAME}-framework.disasm.txt
-    COMMAND ${AVR_OBJDUMP} -d -m avr5 "lib${PROJECT_NAME}-framework.a" > "${PROJECT_NAME}-framework.disasm.txt"
+    COMMAND ${AVR_OBJDUMP} -d -m avr5 -S "lib${PROJECT_NAME}-framework.a" > "${PROJECT_NAME}-framework.disasm.txt"
     DEPENDS ${PROJECT_NAME}-framework
 )
 add_custom_target(framework-disasm ALL DEPENDS ${PROJECT_NAME}-framework.disasm.txt)

@@ -71,7 +71,7 @@ function(avr_target_configure TARGET_FILE)
     # disasm
     add_custom_command(
         OUTPUT ${TARGET}.disasm.txt
-        COMMAND ${AVR_OBJDUMP} -d -m avr5 ${TARGET_FILE} > ${TARGET}.disasm.txt
+        COMMAND ${AVR_OBJDUMP} -d -m avr5 -S ${TARGET_FILE} > ${TARGET}.disasm.txt
         DEPENDS ${TARGET_FILE}
     )
     add_custom_target(${TARGET_FILE}-disasm ALL DEPENDS ${TARGET}.disasm.txt)

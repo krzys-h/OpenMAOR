@@ -1,12 +1,13 @@
 #pragma once
 
 #include "common/stdlib/assert.h"
+#include <stdint.h>
 
 /**
  * \class CBuffer
  * \brief a buffer
  */
-template<typename T, int MAX_SIZE> class CBuffer
+template<typename T, uint8_t MAX_SIZE> class CBuffer
 {
 public:
     CBuffer()
@@ -22,7 +23,7 @@ public:
     }
 
     //! Returns the current size of the buffer
-    int Size()
+    uint8_t Size()
     {
         return m_size;
     }
@@ -40,11 +41,11 @@ public:
     }
 
     //! Returns element of the buffer
-    T operator[](int index) {
+    T operator[](uint8_t index) {
         return m_buffer[index];
     }
 
 protected:
     volatile T m_buffer[MAX_SIZE];
-    volatile int m_size;
+    volatile uint8_t m_size;
 };

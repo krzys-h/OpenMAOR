@@ -42,7 +42,7 @@ protected:
     void ByteRecieved(uint8_t byte);
 
 protected:
-    static const int QUEUE_SIZE = 16;
+    static const uint8_t QUEUE_SIZE = 16;
     CQueue<uint8_t, QUEUE_SIZE> m_queue;
 };
 

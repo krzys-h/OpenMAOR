@@ -14,9 +14,9 @@ template<> CUart* CSingleton<CUart>::m_instance = nullptr;
 CUart::CUart()
 {
     // Ustalamy predkosc transmisji
-    unsigned int ubbr = (F_CPU)/(BAUD*16UL)-1;
-    UBRRH = (unsigned char)(ubbr>>8);
-    UBRRL = (unsigned char)ubbr;
+    uint16_t ubbr = (F_CPU)/(BAUD*16UL)-1;
+    UBRRH = (uint8_t)(ubbr>>8);
+    UBRRL = (uint8_t)ubbr;
 
     // Odpalamy nadajnik i odbiornik
     UCSRB = (1<<RXEN) | (1<<TXEN);

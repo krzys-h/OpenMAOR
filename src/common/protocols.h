@@ -15,7 +15,7 @@ public:
     bool RecieveData(uint8_t byte);
 
 protected:
-    static const int MAX_PROTOCOLS = 2;
+    static const uint8_t MAX_PROTOCOLS = 2;
     CBuffer<CProtocol*, MAX_PROTOCOLS> m_protocols;
     CProtocol* m_currentProtocol = nullptr;
 };

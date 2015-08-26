@@ -16,7 +16,7 @@ bool CProtocols::RecieveData(uint8_t byte)
         return true;
     }
 
-    for (int i = 0; i < m_protocols.Size(); i++)
+    for (uint8_t i = 0; i < m_protocols.Size(); i++)
     {
         if (m_protocols[i]->RecieveData(byte))
         {

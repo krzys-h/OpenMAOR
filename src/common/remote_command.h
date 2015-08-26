@@ -20,12 +20,12 @@ public:
     void SetRightEngine(float power) {};
     uint8_t GetRightEnginePower() { return 0; };
 
-    bool GetLED(int led) { return m_robot->led[led].Get(); };
-    void SetLED(int led, bool value) { m_robot->led[led].Set(value); };
+    bool GetLED(uint8_t led) { return m_robot->led[led].Get(); };
+    void SetLED(uint8_t led, bool value) { m_robot->led[led].Set(value); };
 
     uint8_t GetBatteryStatus() { return 0xFF; };
 
-    bool GetLineSensor(int id) { return false; };
+    bool GetLineSensor(uint8_t id) { return false; };
 
     uint8_t GetLeftSonar() { return 0; };
     uint8_t GetRightSonar() { return 0; };
@@ -33,7 +33,7 @@ public:
     void StartProgram() {};
     void StopProgram() {};
 
-    uint16_t GetCustomADC(int id) { return 0; }; // 10-bit
+    uint16_t GetCustomADC(uint8_t id) { return 0; }; // 10-bit
 
 protected:
     CRobot* m_robot;

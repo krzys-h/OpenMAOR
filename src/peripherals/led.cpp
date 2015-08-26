@@ -35,7 +35,7 @@ void CLed::Toggle()
 
 void CLeds::Set(bool value)
 {
-    for (int i = 0; i < 4; i++)
+    for (uint8_t i = 0; i < 4; i++)
         m_leds[i].Set(value);
 }
 
@@ -49,6 +49,6 @@ void CLeds::Set(bool led0, bool led1, bool led2, bool led3)
 
 void CLeds::Toggle()
 {
-    for (int i = 0; i < 4; i++)
+    for (uint8_t i = 0; i < 4; i++)
         m_leds[i].Toggle();
 }
