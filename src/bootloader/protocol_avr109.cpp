@@ -131,10 +131,6 @@ void CProtocolAVR109Bootloader::StartMemoryOperation(AVR109Command command, AVR1
     {
         StartMemoryWrite(memory, size);
     }
-    else
-    {
-        assert(false);
-    }
 }
 
 void CProtocolAVR109Bootloader::StartMemoryRead(AVR109MemoryType memory, uint16_t size)
@@ -154,10 +150,6 @@ void CProtocolAVR109Bootloader::StartMemoryRead(AVR109MemoryType memory, uint16_
         {
             m_uart->Send(eeprom_read_byte((uint8_t*)m_address));
         }
-    }
-    else
-    {
-        assert(false);
     }
 }
 
@@ -186,10 +178,6 @@ void CProtocolAVR109Bootloader::StartMemoryWrite(AVR109MemoryType memory, uint16
         {
             eeprom_update_byte((uint8_t*)m_address, m_buffer[4+i]);
         }
-    }
-    else
-    {
-        assert(false);
     }
     m_uart->Send(OK);
 }

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "common/stdlib/assert.h"
 #include <stdint.h>
 
 /**
@@ -18,7 +17,7 @@ public:
     //! Adds an element to the end of the buffer
     void Add(const T &x)
     {
-        assert(m_size < MAX_SIZE);
+        if (m_size >= MAX_SIZE) return;
         m_buffer[m_size++] = x;
     }
 

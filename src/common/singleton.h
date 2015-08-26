@@ -20,8 +20,6 @@
 
 #pragma once
 
-#include "common/stdlib/assert.h"
-
 /**
  * \class CSingleton
  * \brief CSingleton base class for singletons
@@ -34,13 +32,11 @@ protected:
 public:
     static T& GetInstance()
     {
-        assert(m_instance != nullptr);
         return *m_instance;
     }
 
     static T* GetInstancePointer()
     {
-        assert(m_instance != nullptr);
         return m_instance;
     }
 
@@ -51,7 +47,6 @@ public:
 
     CSingleton()
     {
-        assert(m_instance == nullptr);
         m_instance = static_cast<T *>(this);
     }
 

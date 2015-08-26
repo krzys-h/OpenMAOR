@@ -32,9 +32,6 @@ void CProtocolSparta::ProcessPacket(SpartaProtocolType protocol, SpartaRobotID r
         case SPARTA_HEADER_STATUS:
             ProcessPacketStatus(data1, data2);
             break;
-
-        default:
-            assert(false);
     }
 }
 void CProtocolSparta::ProcessPacketNormal(SpartaCommand cmd, uint8_t param)
@@ -129,9 +126,6 @@ void CProtocolSparta::ProcessPacketNormal(SpartaCommand cmd, uint8_t param)
         case CMD_ROZKAZ_DEAKTYWACJA:
             m_command->StopProgram();
             break;
-
-        default:
-            assert_failed("Nieznana komenda SPAR-TA");
     }
 }
 
