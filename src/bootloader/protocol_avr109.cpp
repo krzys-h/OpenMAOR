@@ -141,7 +141,7 @@ void CProtocolAVR109Bootloader::StartMemoryRead(AVR109MemoryType memory, uint16_
 {
     if(memory == MEMORY_FLASH)
     {
-        for (uint16_t i = 0; i < size; i += 2, m_address++)
+        for (uint8_t i = 0; i < size; i += 2, m_address++)
         {
             uint16_t data = pgm_read_word(m_address << 1);
             m_uart->Send(data);
@@ -150,7 +150,7 @@ void CProtocolAVR109Bootloader::StartMemoryRead(AVR109MemoryType memory, uint16_
     }
     else if(memory == MEMORY_EEPROM)
     {
-        for (uint16_t i = 0; i < size; i++, m_address++)
+        for (uint8_t i = 0; i < size; i++, m_address++)
         {
             m_uart->Send(eeprom_read_byte((uint8_t*)m_address));
         }
@@ -165,7 +165,7 @@ void CProtocolAVR109Bootloader::StartMemoryWrite(AVR109MemoryType memory, uint16
 {
     if (memory == MEMORY_FLASH)
     {
-        for (uint16_t i = size; i < SPM_PAGESIZE; i++)
+        for (uint8_t i = size; i < SPM_PAGESIZE; i++)
             m_buffer.Add(0xFF);
 
         uint16_t startAddress = m_address;
@@ -182,7 +182,7 @@ void CProtocolAVR109Bootloader::StartMemoryWrite(AVR109MemoryType memory, uint16
     }
     else if (memory == MEMORY_EEPROM)
     {
-        for (uint16_t i = 0; i < size; i++, m_address++)
+        for (uint8_t i = 0; i < size; i++, m_address++)
         {
             eeprom_update_byte((uint8_t*)m_address, m_buffer[4+i]);
         }
