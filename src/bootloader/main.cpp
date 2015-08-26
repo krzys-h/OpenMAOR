@@ -15,9 +15,6 @@ void MoveInterrupts(bool in_bootloader)
     sei();
 }
 
-// TODO: To be extended with program saving/loading
-class CBootloaderRemoteCommandExecutor : public CRemoteCommandExecutor {};
-
 volatile bool exit_bootloader = false;
 int main()
 {
@@ -25,10 +22,10 @@ int main()
     MoveInterrupts(true);
 
     CRobot robot;
-    robot.led[0].Set(true);
+    robot.led.Set(true, true, true, true);
 
     CQueuedUart uart;
-    CBootloaderRemoteCommandExecutor commandExecutor;
+    CRemoteCommandExecutor commandExecutor(&robot);
     CProtocolSparta sparta(&uart, &commandExecutor);
     CProtocolAVR109Bootloader avr109(&uart, &commandExecutor);
     CProtocols protocols;

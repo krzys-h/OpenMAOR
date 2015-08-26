@@ -19,11 +19,13 @@ class CFramework : public CSingleton<CFramework>
 public:
     CFramework()
     : m_uart(UartCallback)
+    , m_command(&m_robot)
     , m_protocolSparta(&m_uart, &m_command)
     , m_protocolAVR109(&m_uart, &m_command)
     {
         m_protocols.AddProtocol(&m_protocolSparta);
         m_protocols.AddProtocol(&m_protocolAVR109);
+        sei();
     }
 
     CRobot& GetRobot()
@@ -58,5 +60,5 @@ protected:
     CProtocols m_protocols;
 
     CProtocolSparta m_protocolSparta;
-    CProtocolSparta m_protocolAVR109;
+    CProtocolAVR109 m_protocolAVR109;
 };

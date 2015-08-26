@@ -10,7 +10,8 @@ class CRobot;
  * \class CButton
  * \brief A button! :D
  */
-class CButton : public CSingleton<CButton> {
+class CButton : public CSingleton<CButton>
+{
 protected:
     friend class CRobot;
     CButton();
