@@ -103,13 +103,11 @@ void CProtocolSparta::ProcessPacketNormal(SpartaCommand cmd, uint8_t param)
             break;
 
         case CMD_STAN_SONAR_L:
-            //TODO
-            SendPacketNormal(CMD_STAN_SONAR_L, 0x00);
+            SendPacketNormal(CMD_STAN_SONAR_L, CFrameworkBase::sonar.Get().left);
             break;
 
         case CMD_STAN_SONAR_R:
-            //TODO
-            SendPacketNormal(CMD_STAN_SONAR_R, 0x00);
+            SendPacketNormal(CMD_STAN_SONAR_R, CFrameworkBase::sonar.Get().right);
             break;
 
         // Nie obslugujemy wgrywania programu ze SPAR-TA (jeszcze)
@@ -163,8 +161,9 @@ void CProtocolSparta::ProcessPacketStatus(uint8_t motorLeft, uint8_t motorRight)
         (CFrameworkBase::led[3].Get() << 3) ;
     data[3] = 0x00;
     data[4] = 0x00;
-    data[5] = 0x00;
-    data[6] = 0x00;
+    CSonar::SonarResult sonar = CFrameworkBase::sonar.Get();
+    data[5] = sonar.left;
+    data[6] = sonar.right;
     data[7] = (0x0000 >> 2);
     data[8] = (0x0000 >> 2);
     data[9] = (0x0000 >> 2);
