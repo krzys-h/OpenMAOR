@@ -12,10 +12,7 @@ project(OpenMAOR C CXX)
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/src")
 
 file(GLOB COMMON_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/common/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/src/common/stdlib/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/src/peripherals/*.cpp")
-add_library(${PROJECT_NAME}-common OBJECT ${COMMON_SRC})
-
-file(GLOB FRAMEWORK_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/framework/*.cpp")
-add_library(${PROJECT_NAME}-framework STATIC $<TARGET_OBJECTS:${PROJECT_NAME}-common> ${FRAMEWORK_SRC})
+add_library(${PROJECT_NAME}-framework STATIC ${COMMON_SRC})
 
 # Lista symboli w bibliotece do frameworka
 add_custom_target(
@@ -32,6 +29,7 @@ add_custom_command(
 add_custom_target(framework-disasm ALL DEPENDS ${PROJECT_NAME}-framework.disasm.txt)
 
 file(GLOB BOOTLOADER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/bootloader/*.cpp")
-add_executable(${PROJECT_NAME}-bootloader.elf $<TARGET_OBJECTS:${PROJECT_NAME}-common> ${BOOTLOADER_SRC})
+add_executable(${PROJECT_NAME}-bootloader.elf ${BOOTLOADER_SRC})
+target_link_libraries(${PROJECT_NAME}-bootloader.elf ${PROJECT_NAME}-framework)
 avr_target_configure_as_bootloader(${PROJECT_NAME}-bootloader.elf)
 avr_target_configure(${PROJECT_NAME}-bootloader.elf)

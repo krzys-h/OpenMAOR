@@ -1,14 +1,23 @@
 #include <avr/io.h>
-#include "framework/framework.h"
+#include "common/framework.h"
 
-CFramework framework;
+class CProgram : public CRobot
+{
+public:
+    void Run()
+    {
+        while (true)
+        {
+            led[0].Set(true);
+            Sleep(500);
+            led[0].Set(false);
+            Sleep(500);
+        }
+    }
+};
 
 int main()
 {
-    while(true) {
-        set_led(0, true);
-        delay_ms(500);
-        set_led(0, false);
-        delay_ms(500);
-    }
+    CProgram program;
+    program.Run();
 }

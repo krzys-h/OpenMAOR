@@ -1,6 +1,6 @@
 #pragma once
 
-#include "peripherals/robot.h"
+#include "peripherals/peripherals.h"
 
 /**
  * \class CRemoteCommandExecutor
@@ -10,7 +10,7 @@
  */
 class CRemoteCommandExecutor {
 public:
-    CRemoteCommandExecutor(CRobot* robot) : m_robot(robot) {};
+    CRemoteCommandExecutor(CPeripherals* robot) : m_robot(robot) {};
 
     float GetLeftEngine() { return 0.0f; };
     void SetLeftEngine(float power) {};
@@ -36,5 +36,5 @@ public:
     uint16_t GetCustomADC(uint8_t id) { return 0; }; // 10-bit
 
 protected:
-    CRobot* m_robot;
+    CPeripherals* m_robot;
 };

@@ -3,13 +3,11 @@
 #include "peripherals/button.h"
 #include "peripherals/led.h"
 
-class CFramework;
-
 /**
- * \class CRobot
- * \brief Main CRobot instance, provides access to all peripherals
+ * \class CPeripherals
+ * \brief Provides access to all peripherals
  */
-class CRobot
+class CPeripherals
 {
 public:
     CButton button;

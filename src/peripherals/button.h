@@ -2,7 +2,7 @@
 #include "common/singleton.h"
 #include "common/class_isr.h"
 
-class CRobot;
+class CPeripherals;
 
 // TODO: CSingleton jest tu tylko dla ISR, nie da sie tego zrobic inaczej?
 
@@ -13,7 +13,7 @@ class CRobot;
 class CButton : public CSingleton<CButton>
 {
 protected:
-    friend class CRobot;
+    friend class CPeripherals;
     CButton();
 
 public:

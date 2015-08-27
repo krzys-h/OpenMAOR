@@ -3,7 +3,7 @@
 #include "common/class_isr.h"
 #include <avr/io.h>
 
-class CRobot;
+class CPeripherals;
 
 /**
  * \class CLed
@@ -32,7 +32,7 @@ protected:
 class CLeds
 {
 protected:
-    friend class CRobot;
+    friend class CPeripherals;
     CLeds()
     : m_leds{
         CLed(&DDRA, &PORTA, 7),
