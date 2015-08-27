@@ -8,10 +8,8 @@ public:
     {
         while (true)
         {
-            led[0].Set(true);
-            Sleep(500);
-            led[0].Set(false);
-            Sleep(500);
+            led[0].Toggle();
+            timer.Sleep(500);
         }
     }
 };

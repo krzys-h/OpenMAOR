@@ -34,9 +34,6 @@ public:
     //! Power off the microcontroller. For use only in extreme cases (e.g. an unrecoverable error)
     static void PowerOff();
 
-    //! Sleeps for given amount of milliseconds
-    static void Sleep(uint16_t delay);
-
 protected:
     static void UartCallback(uint8_t data);
 

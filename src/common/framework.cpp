@@ -3,7 +3,6 @@
 #include <avr/interrupt.h>
 #include <avr/sleep.h>
 #include <avr/wdt.h>
-#include <util/delay.h>
 
 template<> CFrameworkBase* CSingleton<CFrameworkBase>::m_instance = nullptr;
 
@@ -37,13 +36,6 @@ void CFrameworkBase::PowerOff()
     {
         sleep_cpu();
     }
-}
-
-void CFrameworkBase::Sleep(uint16_t delay)
-{
-    // TODO: Trzeba to zrobić na przerwaniach
-    for (uint16_t i = 0; i < delay; i+=100)
-        _delay_ms(100);
 }
 
 // =============================================================================

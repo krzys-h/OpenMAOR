@@ -2,6 +2,7 @@
 
 #include "common/peripherals/button.h"
 #include "common/peripherals/led.h"
+#include "common/peripherals/timer.h"
 
 /**
  * \class CPeripherals
@@ -12,4 +13,6 @@ class CPeripherals
 public:
     CButton button;
     CLeds led;
+
+    CTimer timer;
 };

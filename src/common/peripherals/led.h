@@ -1,5 +1,4 @@
 #pragma once
-#include "common/singleton.h"
 #include "common/class_isr.h"
 #include <avr/io.h>
 
