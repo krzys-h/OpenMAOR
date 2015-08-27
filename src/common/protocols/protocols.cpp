@@ -1,4 +1,4 @@
-#include "common/protocols.h"
+#include "common/protocols/protocols.h"
 
 void CProtocols::AddProtocol(CProtocol* protocol)
 {

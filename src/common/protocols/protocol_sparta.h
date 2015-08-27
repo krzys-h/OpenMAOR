@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/protocol_base.h"
+#include "common/protocols/protocol_base.h"
 
 // Wersja hardware, TODO: co się stanie jeśli zmienimy?
 #define SPARTA_VERSION_HARDWARE 23

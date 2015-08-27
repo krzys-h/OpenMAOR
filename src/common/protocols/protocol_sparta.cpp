@@ -1,6 +1,7 @@
-#include "common/protocol_sparta.h"
-#include "common/uart.h"
+#include "common/protocols/protocol_sparta.h"
+
 #include "common/remote_command.h"
+#include "common/uart.h"
 
 bool CProtocolSparta::RecieveData(uint8_t data)
 {

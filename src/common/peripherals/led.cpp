@@ -1,4 +1,4 @@
-#include "peripherals/led.h"
+#include "common/peripherals/led.h"
 #include <avr/io.h>
 
 CLed::CLed(volatile uint8_t* ddr, volatile uint8_t* port, uint8_t bit)

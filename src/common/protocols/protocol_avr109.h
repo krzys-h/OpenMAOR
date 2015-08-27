@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/protocol_base.h"
+#include "common/protocols/protocol_base.h"
 
 class CProtocolAVR109 : public CBufferedProtocol
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common/protocol_avr109.h"
+#include "common/protocols/protocol_avr109.h"
 
 enum AVR109Command
 {

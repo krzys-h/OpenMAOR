@@ -1,12 +1,14 @@
 #pragma once
 
+#include "common/remote_command.h"
 #include "common/singleton.h"
 #include "common/uart.h"
-#include "common/protocols.h"
-#include "common/remote_command.h"
-#include "common/protocol_sparta.h"
-#include "common/protocol_avr109.h"
-#include "peripherals/peripherals.h"
+
+#include "common/peripherals/peripherals.h"
+
+#include "common/protocols/protocols.h"
+#include "common/protocols/protocol_sparta.h"
+#include "common/protocols/protocol_avr109.h"
 
 /**
  * \class CFrameworkBase

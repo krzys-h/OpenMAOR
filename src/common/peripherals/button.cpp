@@ -1,4 +1,5 @@
-#include "peripherals/button.h"
+#include "common/peripherals/button.h"
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 

@@ -1,4 +1,5 @@
-#include "common/protocol_avr109.h"
+#include "common/protocols/protocol_avr109.h"
+
 #include "common/remote_command.h"
 
 bool CProtocolAVR109::RecieveData(uint8_t data)

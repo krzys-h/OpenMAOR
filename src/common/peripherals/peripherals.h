@@ -1,7 +1,7 @@
 #pragma once
 
-#include "peripherals/button.h"
-#include "peripherals/led.h"
+#include "common/peripherals/button.h"
+#include "common/peripherals/led.h"
 
 /**
  * \class CPeripherals

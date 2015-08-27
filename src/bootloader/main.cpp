@@ -1,10 +1,5 @@
-#include "common/uart.h"
-#include "common/protocol_sparta.h"
-#include "bootloader/protocol_avr109.h"
-#include "common/protocols.h"
-#include "common/remote_command.h"
 #include "common/framework.h"
-#include <avr/sleep.h>
+#include "bootloader/protocol_avr109.h"
 
 class CBootloader : public CFrameworkBase
 {
