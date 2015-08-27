@@ -40,7 +40,7 @@ enum AVR109MemoryType
 class CProtocolAVR109Bootloader : public CProtocolAVR109
 {
 public:
-    CProtocolAVR109Bootloader(CUart* uart, CRemoteCommandExecutor* command) : CProtocolAVR109(uart, command) {};
+    CProtocolAVR109Bootloader(CUart* uart) : CProtocolAVR109(uart) {};
 
     bool RecieveData(uint8_t byte);
 

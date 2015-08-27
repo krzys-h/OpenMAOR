@@ -14,7 +14,7 @@ class CRemoteCommandExecutor;
 class CProtocol
 {
 public:
-    CProtocol(CUart* uart, CRemoteCommandExecutor* command) : m_uart(uart), m_command(command) {};
+    CProtocol(CUart* uart) : m_uart(uart) {};
     CProtocol(const CProtocol&) = delete;
     CProtocol& operator=(const CProtocol&) = delete;
 
@@ -23,7 +23,6 @@ public:
 
 protected:
     CUart* m_uart;
-    CRemoteCommandExecutor* m_command;
 };
 
 /**
@@ -33,7 +32,7 @@ protected:
 class CBufferedProtocol : public CProtocol
 {
 public:
-    CBufferedProtocol(CUart* uart, CRemoteCommandExecutor* command) : CProtocol(uart, command) {};
+    CBufferedProtocol(CUart* uart) : CProtocol(uart) {};
 
 public:
     static const uint8_t MAX_PACKET_SIZE = 4 + SPM_PAGESIZE;

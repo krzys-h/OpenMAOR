@@ -1,6 +1,6 @@
 #include "common/protocols/protocol_sparta.h"
 
-#include "common/remote_command.h"
+#include "common/framework.h"
 #include "common/uart.h"
 
 bool CProtocolSparta::RecieveData(uint8_t data)
@@ -53,23 +53,22 @@ void CProtocolSparta::ProcessPacketNormal(SpartaCommand cmd, uint8_t param)
             break;
 
         case CMD_SILNIK_LEWY:
-            m_command->SetLeftEngine(((static_cast<float>(param)-100) / 100));
+            //TODO
             break;
 
         case CMD_SILNIK_PRAWY:
-            m_command->SetRightEngine(((static_cast<float>(param)-100) / 100));
+            //TODO
             break;
 
         case CMD_SILNIK_STOP:
-            m_command->SetLeftEngine(0.0f);
-            m_command->SetRightEngine(0.0f);
+            //TODO
             break;
 
         case CMD_LED:
-            m_command->SetLED(0, param & (1<<0));
-            m_command->SetLED(1, param & (1<<1));
-            m_command->SetLED(2, param & (1<<2));
-            m_command->SetLED(3, param & (1<<3));
+            CFrameworkBase::led[0].Set(param & (1<<0));
+            CFrameworkBase::led[1].Set(param & (1<<1));
+            CFrameworkBase::led[2].Set(param & (1<<2));
+            CFrameworkBase::led[3].Set(param & (1<<3));
             break;
 
         case CMD_ZAMKNIJ_CHWYTAK:
@@ -78,32 +77,38 @@ void CProtocolSparta::ProcessPacketNormal(SpartaCommand cmd, uint8_t param)
             break;
 
         case CMD_STAN_BATERII:
-            SendPacketNormal(CMD_STAN_BATERII, m_command->GetBatteryStatus());
+            //TODO
+            SendPacketNormal(CMD_STAN_BATERII, 0xFF);
             break;
 
         case CMD_STAN_CZ_LINII:
+            //TODO
             SendPacketNormal(CMD_STAN_CZ_LINII,
-                (m_command->GetLineSensor(0) << 0) |
-                (m_command->GetLineSensor(1) << 1) |
-                (m_command->GetLineSensor(2) << 2) |
-                (m_command->GetLineSensor(3) << 3)
+                (0 << 0) |
+                (0 << 1) |
+                (0 << 2) |
+                (0 << 3)
             );
             break;
 
         case CMD_STAN_PRAD_L:
-            SendPacketNormal(CMD_STAN_PRAD_L, m_command->GetLeftEnginePower());
+            //TODO
+            SendPacketNormal(CMD_STAN_PRAD_L, 0x00);
             break;
 
         case CMD_STAN_PRAD_R:
-            SendPacketNormal(CMD_STAN_PRAD_R, m_command->GetRightEnginePower());
+            //TODO
+            SendPacketNormal(CMD_STAN_PRAD_R, 0x00);
             break;
 
         case CMD_STAN_SONAR_L:
-            SendPacketNormal(CMD_STAN_SONAR_L, m_command->GetLeftSonar());
+            //TODO
+            SendPacketNormal(CMD_STAN_SONAR_L, 0x00);
             break;
 
         case CMD_STAN_SONAR_R:
-            SendPacketNormal(CMD_STAN_SONAR_R, m_command->GetRightSonar());
+            //TODO
+            SendPacketNormal(CMD_STAN_SONAR_R, 0x00);
             break;
 
         // Nie obslugujemy wgrywania programu ze SPAR-TA (jeszcze)
@@ -121,11 +126,11 @@ void CProtocolSparta::ProcessPacketNormal(SpartaCommand cmd, uint8_t param)
             break;
 
         case CMD_ROZKAZ_AKTYWACJA:
-            m_command->StartProgram();
+            //TODO
             break;
 
         case CMD_ROZKAZ_DEAKTYWACJA:
-            m_command->StopProgram();
+            //TODO
             break;
     }
 }
@@ -134,34 +139,34 @@ void CProtocolSparta::ProcessPacketStatus(uint8_t motorLeft, uint8_t motorRight)
 {
     if (motorLeft != SPARTA_STATUS_NO_MOTOR_CHANGE)
     {
-        m_command->SetLeftEngine((static_cast<float>(motorLeft)-100)/100);
+        //TODO
     }
     if (motorRight != SPARTA_STATUS_NO_MOTOR_CHANGE)
     {
-        m_command->SetRightEngine((static_cast<float>(motorLeft)-100)/100);
+        //TODO
     }
 
     uint8_t data[12];
-    data[0] = m_command->GetBatteryStatus();
+    data[0] = 0xFF;
     data[1] =
-        (m_command->GetLineSensor(0) << 0) |
-        (m_command->GetLineSensor(1) << 1) |
-        (m_command->GetLineSensor(2) << 2) |
-        (m_command->GetLineSensor(3) << 3) ;
+        (0 << 0) |
+        (0 << 1) |
+        (0 << 2) |
+        (0 << 3) ;
     data[2] =
-        (m_command->GetLED(0) << 0) |
-        (m_command->GetLED(1) << 1) |
-        (m_command->GetLED(2) << 2) |
-        (m_command->GetLED(3) << 3) ;
-    data[3] = m_command->GetLeftEnginePower();
-    data[4] = m_command->GetRightEnginePower();
-    data[5] = m_command->GetLeftSonar();
-    data[6] = m_command->GetRightSonar();
-    data[7] = static_cast<uint8_t>(m_command->GetCustomADC(0) >> 2);
-    data[8] = static_cast<uint8_t>(m_command->GetCustomADC(1) >> 2);
-    data[9] = static_cast<uint8_t>(m_command->GetCustomADC(2) >> 2);
-    data[10] = static_cast<uint8_t>(m_command->GetLeftEngine()+100);
-    data[11] = static_cast<uint8_t>(m_command->GetRightEngine()+100);
+        (CFrameworkBase::led[0].Get() << 0) |
+        (CFrameworkBase::led[1].Get() << 1) |
+        (CFrameworkBase::led[2].Get() << 2) |
+        (CFrameworkBase::led[3].Get() << 3) ;
+    data[3] = 0x00;
+    data[4] = 0x00;
+    data[5] = 0x00;
+    data[6] = 0x00;
+    data[7] = (0x0000 >> 2);
+    data[8] = (0x0000 >> 2);
+    data[9] = (0x0000 >> 2);
+    data[10] = 100;
+    data[11] = 100;
 
     SendPacketStatus(CMD_STAN_CZUJNIKI, data);
 }

@@ -5,7 +5,7 @@
 class CProtocolAVR109 : public CBufferedProtocol
 {
 public:
-    CProtocolAVR109(CUart* uart, CRemoteCommandExecutor* command) : CBufferedProtocol(uart, command) {};
+    CProtocolAVR109(CUart* uart) : CBufferedProtocol(uart) {};
 
     bool RecieveData(uint8_t byte);
 };

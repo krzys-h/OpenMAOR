@@ -5,7 +5,7 @@ class CBootloader : public CFrameworkBase
 {
 public:
     CBootloader()
-    : m_protocolAVR109(&uart, &m_command)
+    : m_protocolAVR109(&uart)
     {
         AddProtocol(&m_protocolAVR109);
 

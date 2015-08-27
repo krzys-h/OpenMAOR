@@ -1,6 +1,5 @@
 #include "bootloader/protocol_avr109.h"
 #include "common/uart.h"
-#include "common/remote_command.h"
 
 #include <avr/boot.h>
 #include <avr/pgmspace.h>

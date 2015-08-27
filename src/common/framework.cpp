@@ -8,8 +8,7 @@ template<> CFrameworkBase* CSingleton<CFrameworkBase>::m_instance = nullptr;
 
 CFrameworkBase::CFrameworkBase()
     : uart(UartCallback)
-    , m_command(this)
-    , m_protocolSparta(&uart, &m_command)
+    , m_protocolSparta(&uart)
 {
     AddProtocol(&m_protocolSparta);
 }
@@ -42,7 +41,7 @@ void CFrameworkBase::PowerOff()
 
 CRobot::CRobot()
     : CFrameworkBase()
-    , m_protocolAVR109(&uart, &m_command)
+    , m_protocolAVR109(&uart)
 {
     AddProtocol(&m_protocolAVR109);
     button.SetCallback(ExitToBootloader);

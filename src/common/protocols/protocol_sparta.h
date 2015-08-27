@@ -119,7 +119,7 @@ enum SpartaCommand {
 class CProtocolSparta : public CBufferedProtocol
 {
 public:
-    CProtocolSparta(CUart* uart, CRemoteCommandExecutor* command) : CBufferedProtocol(uart, command) {};
+    CProtocolSparta(CUart* uart) : CBufferedProtocol(uart) {};
 
     bool RecieveData(uint8_t byte);
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "common/remote_command.h"
 #include "common/singleton.h"
 #include "common/uart.h"
 
@@ -43,8 +42,6 @@ public:
     CAsyncUart uart;
 
 protected:
-    CRemoteCommandExecutor m_command;
-
     CProtocolSparta m_protocolSparta;
 };
 

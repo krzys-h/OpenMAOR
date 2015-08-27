@@ -11,8 +11,8 @@
 class CPeripherals
 {
 public:
-    CButton button;
-    CLeds led;
+    static CButton button;
+    static CLeds led;
 
-    CTimer timer;
+    static CTimer timer;
 };
