@@ -1,6 +1,8 @@
 #include "common/peripherals/line_sensor.h"
 #include <avr/io.h>
 
+// TODO: This is untested!
+
 CLineSensor::CLineSensor(volatile uint8_t& ddr, volatile uint8_t& port, volatile uint8_t& pin, uint8_t bit)
     : m_pin(pin)
     , m_bit(bit)

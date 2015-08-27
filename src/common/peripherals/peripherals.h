@@ -5,6 +5,7 @@
 #include "common/peripherals/timer.h"
 #include "common/peripherals/motors.h"
 #include "common/peripherals/line_sensor.h"
+#include "common/peripherals/sonar.h"
 
 #include "common/extra_section.h"
 
@@ -21,6 +22,7 @@ public:
     static CMotors motors;
 
     static CLineSensors lineSensor;
+    static CSonar sonar;
 
     static CTimer timer;
 };
