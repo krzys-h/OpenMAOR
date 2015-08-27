@@ -1,5 +1,4 @@
 #pragma once
-#include "common/singleton.h"
 #include "common/class_isr.h"
 #include <avr/io.h>
 
@@ -7,10 +6,9 @@ class CPeripherals;
 
 /**
  * \class CTimer
- * \brief Handles microcontroller timers
+ * \brief Handles microcontroller timers (Timer0)
  */
-// singleton dla ISR
-class CTimer : public CSingleton<CTimer>
+class CTimer
 {
 protected:
     friend class CPeripherals;
@@ -18,14 +16,14 @@ protected:
 
 public:
     //! Sleep for a given amount of time in milliseconds (~0.1s accuracy, low power)
-    void Sleep(uint16_t delay);
+    static void Sleep(uint16_t delay);
 
-    DECLARE_CLASS_ISR(TIMER0_OVF_vect);
+protected:
+    static void StartTimer0(uint8_t initValue);
+    static void StopTimer0();
 
-//protected:
-    void StartTimer0(uint8_t initValue);
-    void StopTimer0();
-
-    volatile uint8_t m_timer0InitValue;
-    volatile uint8_t m_timer0Counter;
+// musi być public bo ISR
+public:
+    static volatile uint8_t m_timer0InitValue;
+    static volatile uint8_t m_timer0Counter;
 };

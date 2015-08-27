@@ -1,7 +1,8 @@
 #include "common/peripherals/timer.h"
 #include "common/framework.h"
 
-template<> CTimer* CSingleton<CTimer>::m_instance = nullptr;
+volatile uint8_t CTimer::m_timer0Counter;
+volatile uint8_t CTimer::m_timer0InitValue;
 
 CTimer::CTimer()
 {
@@ -34,8 +35,8 @@ void CTimer::StopTimer0()
     TCNT0 = 0;
 }
 
-CLASS_ISR(CTimer, TIMER0_OVF_vect)
+ISR(TIMER0_OVF_vect)
 {
-    m_timer0Counter++;
-    TCNT0 = m_timer0InitValue;
+    CTimer::m_timer0Counter++;
+    TCNT0 = CTimer::m_timer0InitValue;
 }

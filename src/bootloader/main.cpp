@@ -39,6 +39,10 @@ protected:
 
 int main()
 {
+    DDRA = 0xFF;
+    DDRB = 0xFF;
+    DDRC = 0xFF;
+    DDRD = 0xFF;
     CBootloader bootloader;
     bootloader.Run();
 }
