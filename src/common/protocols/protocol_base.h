@@ -15,6 +15,8 @@ class CProtocol
 {
 public:
     CProtocol(CUart* uart, CRemoteCommandExecutor* command) : m_uart(uart), m_command(command) {};
+    CProtocol(const CProtocol&) = delete;
+    CProtocol& operator=(const CProtocol&) = delete;
 
     //! Read the incoming byte. If this returns true, the next recieved byte will be immediately delivered here, skipping all other protocols.
     virtual bool RecieveData(uint8_t byte) = 0;

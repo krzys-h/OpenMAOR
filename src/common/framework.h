@@ -19,6 +19,8 @@ class CFrameworkBase : public CPeripherals, public CProtocols, protected CSingle
 friend class CSingleton<CFrameworkBase>;
 public:
     CFrameworkBase();
+    CFrameworkBase(const CFrameworkBase&) = delete;
+    CFrameworkBase& operator=(const CFrameworkBase&) = delete;
 
     //! Sleeps until some interrupt occurs, this highly decreases power usage
     static void IdleSleep();

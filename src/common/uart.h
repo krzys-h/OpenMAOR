@@ -14,6 +14,9 @@ public:
     CUart();
     ~CUart();
 
+    CUart(const CUart&) = delete;
+    CUart& operator=(const CUart&) = delete;
+
     DECLARE_CLASS_ISR(USART_RXC_vect);
 
     //! Waits for previous transmission to finish

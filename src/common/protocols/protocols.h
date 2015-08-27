@@ -10,7 +10,13 @@ class CProtocol;
  */
 class CProtocols
 {
+protected:
+    CProtocols() {};
+
 public:
+    CProtocols(const CProtocols&) = delete;
+    CProtocols& operator=(const CProtocols&) = delete;
+
     void AddProtocol(CProtocol* protocol);
     bool RecieveData(uint8_t byte);
 

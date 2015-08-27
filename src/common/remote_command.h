@@ -11,6 +11,8 @@
 class CRemoteCommandExecutor {
 public:
     CRemoteCommandExecutor(CPeripherals* robot) : m_robot(robot) {};
+    CRemoteCommandExecutor(const CRemoteCommandExecutor&) = delete;
+    CRemoteCommandExecutor& operator=(const CRemoteCommandExecutor&) = delete;
 
     float GetLeftEngine() { return 0.0f; };
     void SetLeftEngine(float power) {};
