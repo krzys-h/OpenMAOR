@@ -38,15 +38,10 @@ CLASS_ISR(CUart, USART_RXC_vect)
     ByteRecieved(UDR);
 }
 
-void CUart::WaitUntilSendingFinished()
-{
-    while(!(UCSRA & (1<<UDRE)));
-}
-
 void CUart::Send(uint8_t byte)
 {
     // TODO: Wysyłanie na przerwaniach
-    WaitUntilSendingFinished();
+    while(!(UCSRA & (1<<UDRE)));
     UDR = byte;
 }
 
@@ -57,20 +52,6 @@ void CUart::SendString(const char* string)
     {
         Send(*string++);
     }
-}
-
-// =============================================================================
-
-void CQueuedUart::ByteRecieved(uint8_t byte)
-{
-    m_queue.Add(byte);
-}
-
-uint8_t CQueuedUart::Recv()
-{
-    uint8_t x;
-    while(!m_queue.Get(x));
-    return x;
 }
 
 // =============================================================================

@@ -2,6 +2,8 @@
 #include "common/class_isr.h"
 #include <avr/io.h>
 
+#include "common/extra_section.h"
+
 class CPeripherals;
 
 /**
@@ -16,8 +18,8 @@ protected:
 
 public:
     static const int16_t MAX_SPEED = 1023;
-    static void SetLeft(int16_t value);
-    static void SetRight(int16_t value);
+    static void SetLeft(int16_t value) EXTRA;
+    static void SetRight(int16_t value) EXTRA;
     inline static void SetMotors(int16_t left, int16_t right)
     {
         SetLeft(left);

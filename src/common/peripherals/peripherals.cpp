@@ -5,4 +5,6 @@ CLeds CPeripherals::led;
 
 CMotors CPeripherals::motors;
 
+CLineSensors CPeripherals::lineSensor;
+
 CTimer CPeripherals::timer;

@@ -82,13 +82,14 @@ void CProtocolSparta::ProcessPacketNormal(SpartaCommand cmd, uint8_t param)
             break;
 
         case CMD_STAN_CZ_LINII:
-            //TODO
+            CFrameworkBase::lineSensor.Enable(true);
             SendPacketNormal(CMD_STAN_CZ_LINII,
-                (0 << 0) |
-                (0 << 1) |
-                (0 << 2) |
-                (0 << 3)
+                (CFrameworkBase::lineSensor[0].Get() << 0) |
+                (CFrameworkBase::lineSensor[1].Get() << 1) |
+                (CFrameworkBase::lineSensor[2].Get() << 2) |
+                (CFrameworkBase::lineSensor[3].Get() << 3)
             );
+            CFrameworkBase::lineSensor.Enable(false);
             break;
 
         case CMD_STAN_PRAD_L:
@@ -148,11 +149,13 @@ void CProtocolSparta::ProcessPacketStatus(uint8_t motorLeft, uint8_t motorRight)
 
     uint8_t data[12];
     data[0] = 0xFF;
+    CFrameworkBase::lineSensor.Enable(true);
     data[1] =
-        (0 << 0) |
-        (0 << 1) |
-        (0 << 2) |
-        (0 << 3) ;
+        (CFrameworkBase::lineSensor[0].Get() << 0) |
+        (CFrameworkBase::lineSensor[1].Get() << 1) |
+        (CFrameworkBase::lineSensor[2].Get() << 2) |
+        (CFrameworkBase::lineSensor[3].Get() << 3) ;
+    CFrameworkBase::lineSensor.Enable(false);
     data[2] =
         (CFrameworkBase::led[0].Get() << 0) |
         (CFrameworkBase::led[1].Get() << 1) |

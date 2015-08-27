@@ -43,7 +43,7 @@ set(PRINTF_LIB "")
 
 # https://github.com/acristoffers/CMake-AVR/blob/master/Blink/CMakeLists.txt#L66-80
 # Flagi kompilatora
-set(CMAKE_CXX_FLAGS "-mmcu=${MCU} -gstabs -g -ggdb -DF_CPU=${F_CPU} -Os -lm ${PRINTF_LIB} -funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums -ffunction-sections -fdata-sections -std=c++11")
+set(CMAKE_CXX_FLAGS "-mmcu=${MCU} -gstabs -g -ggdb -DF_CPU=${F_CPU} -Os -lm ${PRINTF_LIB} -funsigned-char -funsigned-bitfields -fshort-enums -ffunction-sections -fdata-sections -std=c++11")
 set(CMAKE_C_FLAGS   "${CMAKE_CXX_FLAGS} -Wall -Wstrict-prototypes -Wl,--gc-sections -Wl,--relax -std=gnu99")
 
 function(avr_target_configure_as_bootloader TARGET_FILE)

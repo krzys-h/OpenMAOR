@@ -19,8 +19,6 @@ public:
 
     DECLARE_CLASS_ISR(USART_RXC_vect);
 
-    //! Waits for previous transmission to finish
-    void WaitUntilSendingFinished();
     //! Waits for previous transmission to finish and then sends one byte via UART
     void Send(uint8_t byte);
     //! Sends a null-terminated string
@@ -29,24 +27,6 @@ public:
 protected:
     //! Called after a byte is recieved
     virtual void ByteRecieved(uint8_t byte) = 0;
-};
-
-/**
- * \class CQueuedUart
- * \brief Synchronous UART communication with a recieving queue
- */
-class CQueuedUart : public CUart
-{
-public:
-    //! Waits for a byte to be recieved and returns it
-    uint8_t Recv();
-
-protected:
-    void ByteRecieved(uint8_t byte);
-
-protected:
-    static const uint8_t QUEUE_SIZE = 16;
-    CQueue<uint8_t, QUEUE_SIZE> m_queue;
 };
 
 /**

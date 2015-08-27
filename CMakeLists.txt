@@ -30,6 +30,6 @@ add_custom_target(framework-disasm ALL DEPENDS ${PROJECT_NAME}-framework.disasm.
 
 file(GLOB BOOTLOADER_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/bootloader/*.cpp")
 add_executable(${PROJECT_NAME}-bootloader.elf ${BOOTLOADER_SRC})
-target_link_libraries(${PROJECT_NAME}-bootloader.elf ${PROJECT_NAME}-framework)
+target_link_libraries(${PROJECT_NAME}-bootloader.elf ${PROJECT_NAME}-framework -T ${CMAKE_CURRENT_SOURCE_DIR}/src/bootloader/linker.x)
 avr_target_configure_as_bootloader(${PROJECT_NAME}-bootloader.elf)
 avr_target_configure(${PROJECT_NAME}-bootloader.elf)

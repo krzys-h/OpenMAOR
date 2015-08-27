@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common/protocols/protocol_base.h"
+#include "common/extra_section.h"
 
 // Wersja hardware, TODO: co się stanie jeśli zmienimy?
 #define SPARTA_VERSION_HARDWARE 23
@@ -121,15 +122,15 @@ class CProtocolSparta : public CBufferedProtocol
 public:
     CProtocolSparta(CUart* uart) : CBufferedProtocol(uart) {};
 
-    bool RecieveData(uint8_t byte);
+    bool RecieveData(uint8_t byte) EXTRA;
 
 protected:
-    void ProcessPacket(SpartaProtocolType protocol, SpartaRobotID robotid, uint8_t data1, uint8_t data2);
-    void ProcessPacketNormal(SpartaCommand cmd, uint8_t param);
-    void ProcessPacketStatus(uint8_t param1, uint8_t param2);
+    void ProcessPacket(SpartaProtocolType protocol, SpartaRobotID robotid, uint8_t data1, uint8_t data2) EXTRA;
+    void ProcessPacketNormal(SpartaCommand cmd, uint8_t param) EXTRA;
+    void ProcessPacketStatus(uint8_t param1, uint8_t param2) EXTRA;
 
-    void SendPacketNormal(SpartaRobotID senderid, SpartaCommand cmd, uint8_t param);
-    void SendPacketStatus(SpartaRobotID senderid, SpartaCommand cmd, const uint8_t (&params)[12]);
-    void SendPacketNormal(SpartaCommand cmd, uint8_t param);
-    void SendPacketStatus(SpartaCommand cmd, const uint8_t (&params)[12]);
+    void SendPacketNormal(SpartaRobotID senderid, SpartaCommand cmd, uint8_t param) EXTRA;
+    void SendPacketStatus(SpartaRobotID senderid, SpartaCommand cmd, const uint8_t (&params)[12]) EXTRA;
+    void SendPacketNormal(SpartaCommand cmd, uint8_t param) EXTRA;
+    void SendPacketStatus(SpartaCommand cmd, const uint8_t (&params)[12]) EXTRA;
 };

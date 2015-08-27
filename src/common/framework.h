@@ -7,7 +7,6 @@
 
 #include "common/protocols/protocols.h"
 #include "common/protocols/protocol_sparta.h"
-#include "common/protocols/protocol_avr109.h"
 
 /**
  * \class CFrameworkBase
@@ -32,9 +31,6 @@ public:
         }
     }
 
-    //! Power off the microcontroller. For use only in extreme cases (e.g. an unrecoverable error)
-    static void PowerOff();
-
 protected:
     static void UartCallback(uint8_t data);
 
@@ -43,19 +39,4 @@ public:
 
 protected:
     CProtocolSparta m_protocolSparta;
-};
-
-/**
- * \class CRobot
- * \brief Main robot class. You should inherit from this class and implement your own program in it
- */
-class CRobot : public CFrameworkBase
-{
-public:
-    CRobot();
-
-    static void ExitToBootloader();
-
-private:
-    CProtocolAVR109 m_protocolAVR109;
 };

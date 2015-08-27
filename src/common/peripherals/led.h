@@ -12,7 +12,7 @@ class CLed
 {
 protected:
     friend class CLeds;
-    CLed(volatile uint8_t* ddr, volatile uint8_t* port, uint8_t bit);
+    CLed(volatile uint8_t& ddr, volatile uint8_t& port, uint8_t bit);
 
 public:
     void Set(bool value);
@@ -20,7 +20,7 @@ public:
     void Toggle();
 
 protected:
-    volatile uint8_t* m_port;
+    volatile uint8_t& m_port;
     uint8_t m_bit;
 };
 
@@ -34,10 +34,10 @@ protected:
     friend class CPeripherals;
     CLeds()
     : m_leds{
-        CLed(&DDRA, &PORTA, 7),
-        CLed(&DDRC, &PORTC, 3),
-        CLed(&DDRA, &PORTA, 6),
-        CLed(&DDRC, &PORTC, 1)
+        CLed(DDRA, PORTA, 7),
+        CLed(DDRC, PORTC, 3),
+        CLed(DDRA, PORTA, 6),
+        CLed(DDRC, PORTC, 1)
     }
     {}
 

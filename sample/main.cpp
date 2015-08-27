@@ -1,5 +1,5 @@
 #include <avr/io.h>
-#include "common/framework.h"
+#include "common/robot.h"
 
 class CProgram : public CRobot
 {

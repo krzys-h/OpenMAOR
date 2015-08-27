@@ -25,33 +25,3 @@ void CFrameworkBase::IdleSleep()
     sleep_cpu();
     sleep_disable();
 }
-
-void CFrameworkBase::PowerOff()
-{
-    cli();
-    set_sleep_mode(SLEEP_MODE_PWR_DOWN);
-    sleep_enable();
-    while (true)
-    {
-        sleep_cpu();
-    }
-}
-
-// =============================================================================
-
-CRobot::CRobot()
-    : CFrameworkBase()
-    , m_protocolAVR109(&uart)
-{
-    AddProtocol(&m_protocolAVR109);
-    button.SetCallback(ExitToBootloader);
-    sei();
-}
-
-// const static void (*jump_bootloader)(void) __attribute__((noreturn)) = (const void(*)())BOOTLOADER_START;
-void CRobot::ExitToBootloader()
-{
-    cli();
-    wdt_enable(WDTO_15MS);
-    while (true);
-}
