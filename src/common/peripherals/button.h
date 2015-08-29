@@ -24,7 +24,7 @@ public:
     typedef void(*ButtonCallback)();
     void SetCallback(ButtonCallback callback) EXTRA;
 
-    DECLARE_CLASS_ISR(INT1_vect) EXTRA;
+    DECLARE_CLASS_ISR(INT1_vect);
 
 protected:
     ButtonCallback m_callback;
