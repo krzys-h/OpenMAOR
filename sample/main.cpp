@@ -1,4 +1,3 @@
-#include <avr/io.h>
 #include "common/robot.h"
 
 class CProgram : public CRobot

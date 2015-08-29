@@ -62,14 +62,16 @@ protected:
         asm volatile (
             "in r16, %[_GICR]\n"
             "mov r17, r16\n"
-            "ori r16, %[value1]\n"
-            "ori r17, %[value2]\n"
+            "sbr r16, %[_IVCE]\n"
+            "cbr r17, %[_IVSEL]\n"
+            "ori r17, %[value]\n"
             "out %[_GICR], r16\n"
             "out %[_GICR], r17"
             :
             : [_GICR]  "I" (_SFR_IO_ADDR(GICR))
-            , [value1] "I" (1 << IVCE)
-            , [value2] "I" (in_bootloader << IVSEL)
+            , [_IVCE]  "I" (1 << IVCE)
+            , [_IVSEL] "I" (1 << IVSEL)
+            , [value]  "I" (in_bootloader << IVSEL)
             : "r16", "r17"
         );
     }

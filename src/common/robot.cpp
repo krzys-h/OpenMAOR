@@ -6,8 +6,8 @@ CRobot::CRobot()
     , m_protocolAVR109(&uart)
 {
     AddProtocol(&m_protocolAVR109);
-    button.SetCallback(ExitToBootloader);
     sei();
+    button.SetCallback(ExitToBootloader);
 }
 
 // const static void (*jump_bootloader)(void) __attribute__((noreturn)) = (const void(*)())BOOTLOADER_START;
