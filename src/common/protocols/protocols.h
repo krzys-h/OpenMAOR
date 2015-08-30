@@ -22,6 +22,6 @@ public:
 
 private:
     static const uint8_t MAX_PROTOCOLS = 2;
-    CBuffer<CProtocol*, MAX_PROTOCOLS> m_protocols;
+    StdLib::CBuffer<CProtocol*, MAX_PROTOCOLS> m_protocols;
     CProtocol* m_currentProtocol = nullptr;
 };

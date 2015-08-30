@@ -41,5 +41,5 @@ public:
 protected:
     //! Recieved packet buffer
     /** NOTE: Because you can recieve packets only from one protocol at a time, this buffer is shared across all protocols. Be careful! **/
-    static CBuffer<uint8_t, MAX_PACKET_SIZE> m_buffer;
+    static StdLib::CBuffer<uint8_t, MAX_PACKET_SIZE> m_buffer;
 };

@@ -2,6 +2,9 @@
 
 #include <stdint.h>
 
+namespace StdLib
+{
+
 /**
  * \class CBuffer
  * \brief a buffer
@@ -48,3 +51,5 @@ private:
     volatile T m_buffer[MAX_SIZE];
     volatile uint8_t m_size;
 };
+
+} // namespace StdLib

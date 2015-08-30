@@ -2,6 +2,9 @@
 
 #include <stdint.h>
 
+namespace StdLib
+{
+
 /**
  * \class CQueue
  * \brief a FIFO queue
@@ -46,3 +49,5 @@ private:
     volatile uint8_t m_tail;
     volatile uint8_t m_total;
 };
+
+} // namespace StdLib
