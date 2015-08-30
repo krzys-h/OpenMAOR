@@ -6,6 +6,7 @@
 #include "common/peripherals/motors.h"
 #include "common/peripherals/line_sensor.h"
 #include "common/peripherals/sonar.h"
+#include "common/peripherals/adc.h"
 
 #include "common/extra_section.h"
 
@@ -28,6 +29,7 @@ public:
     static Peripherals::CSonar sonar;
 
     static Peripherals::CTimer timer;
+    static Peripherals::CADC adc;
 };
 
 } // namespace OpenMAOR

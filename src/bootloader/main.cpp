@@ -6,6 +6,7 @@ namespace OpenMAOR
 namespace Bootloader
 {
 
+
 class CBootloader : public CFrameworkBase
 {
 public:

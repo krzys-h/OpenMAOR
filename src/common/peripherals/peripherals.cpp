@@ -12,5 +12,6 @@ Peripherals::CLineSensors CPeripherals::lineSensor;
 Peripherals::CSonar CPeripherals::sonar;
 
 Peripherals::CTimer CPeripherals::timer;
+Peripherals::CADC CPeripherals::adc;
 
 } // namespace OpenMAOR
