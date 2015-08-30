@@ -60,7 +60,7 @@ public:
         }
         else
         {
-            PORTD &= ~(1 << 6);
+            PORTD &= ~(_BV(6));
         }
     }
 

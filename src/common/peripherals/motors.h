@@ -17,7 +17,7 @@ protected:
     CMotors();
 
 public:
-    static const int16_t MAX_SPEED = 1023;
+    static const uint16_t MAX_SPEED = 1023;
     static void SetLeft(int16_t value) EXTRA;
     static void SetRight(int16_t value) EXTRA;
     inline static void SetMotors(int16_t left, int16_t right)
@@ -41,6 +41,16 @@ public:
     inline static int16_t GetRight()
     {
         return m_speedRight;
+    }
+
+    // TODO: Doesn't this overflow? :/
+    inline static int16_t PercentageToSpeed(int8_t percentage)
+    {
+        return percentage * MAX_SPEED / 100;
+    }
+    inline static int8_t SpeedToPercentage(int16_t speed)
+    {
+        return speed * 100 / MAX_SPEED;
     }
 
 protected:

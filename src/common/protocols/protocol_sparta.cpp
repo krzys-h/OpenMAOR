@@ -53,11 +53,11 @@ void CProtocolSparta::ProcessPacketNormal(SpartaCommand cmd, uint8_t param)
             break;
 
         case CMD_SILNIK_LEWY:
-            CFrameworkBase::motors.SetLeft(param-100);
+            CFrameworkBase::motors.SetLeft(CMotors::PercentageToSpeed(param-100));
             break;
 
         case CMD_SILNIK_PRAWY:
-            CFrameworkBase::motors.SetRight(param-100);
+            CFrameworkBase::motors.SetRight(CMotors::PercentageToSpeed(param-100));
             break;
 
         case CMD_SILNIK_STOP:
@@ -138,11 +138,11 @@ void CProtocolSparta::ProcessPacketStatus(uint8_t motorLeft, uint8_t motorRight)
 {
     if (motorLeft != SPARTA_STATUS_NO_MOTOR_CHANGE)
     {
-        CFrameworkBase::motors.SetLeft(motorLeft-100);
+        CFrameworkBase::motors.SetLeft(CMotors::PercentageToSpeed(motorLeft-100));
     }
     if (motorRight != SPARTA_STATUS_NO_MOTOR_CHANGE)
     {
-        CFrameworkBase::motors.SetRight(motorRight-100);
+        CFrameworkBase::motors.SetRight(CMotors::PercentageToSpeed(motorRight-100));
     }
 
     uint8_t data[12];
@@ -167,8 +167,8 @@ void CProtocolSparta::ProcessPacketStatus(uint8_t motorLeft, uint8_t motorRight)
     data[7] = (0x0000 >> 2);
     data[8] = (0x0000 >> 2);
     data[9] = (0x0000 >> 2);
-    data[10] = CFrameworkBase::motors.GetLeft()+100;
-    data[11] = CFrameworkBase::motors.GetRight()+100;
+    data[10] = CMotors::SpeedToPercentage(CFrameworkBase::motors.GetLeft())+100;
+    data[11] = CMotors::SpeedToPercentage(CFrameworkBase::motors.GetRight())+100;
 
     SendPacketStatus(CMD_STAN_CZUJNIKI, data);
 }
