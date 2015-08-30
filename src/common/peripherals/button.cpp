@@ -29,6 +29,7 @@ bool CButton::Get()
     return (PIND & _BV(3)) == 0;
 }
 
+CButton::ButtonCallback CButton::m_callback = nullptr;
 void CButton::SetCallback(ButtonCallback callback)
 {
     m_callback = callback;

@@ -37,7 +37,7 @@ CUart::~CUart()
 
 CLASS_ISR(CUart, USART_RXC_vect)
 {
-    ByteRecieved(UDR);
+    CUart::GetInstance().ByteRecieved(UDR);
 }
 
 void CUart::Send(uint8_t byte)

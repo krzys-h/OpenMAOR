@@ -25,15 +25,15 @@ private:
     CButton() EXTRA;
 
 public:
-    bool Get() EXTRA;
+    static bool Get() EXTRA;
 
     typedef void(*ButtonCallback)();
-    void SetCallback(ButtonCallback callback) EXTRA;
+    static void SetCallback(ButtonCallback callback) EXTRA;
 
     DECLARE_CLASS_ISR(INT1_vect);
 
 private:
-    ButtonCallback m_callback;
+    static ButtonCallback m_callback;
 };
 
 } // namespace Peripherals
