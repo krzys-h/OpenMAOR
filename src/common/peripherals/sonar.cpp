@@ -2,6 +2,11 @@
 
 // TODO: This code is untested!
 
+namespace OpenMAOR
+{
+namespace Peripherals
+{
+
 // TODO: Separate file for SPI?
 
 inline void SPIOn()
@@ -58,3 +63,6 @@ CSonar::SonarResult CSonar::Get()
 
     return s;
 }
+
+} // namespace Peripherals
+} // namespace OpenMAOR

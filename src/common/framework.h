@@ -8,9 +8,12 @@
 #include "common/protocols/protocols.h"
 #include "common/protocols/protocol_sparta.h"
 
+namespace OpenMAOR
+{
+
 /**
  * \class CFrameworkBase
- * \brief Provides base functionality of the framework, used in bootloader
+ * \brief Provides base functionality of the framework, used also in bootloader
  */
 class CFrameworkBase : public CPeripherals, public CProtocols, protected CSingleton<CFrameworkBase>
 {
@@ -40,5 +43,7 @@ public:
     CAsyncUart uart;
 
 private:
-    CProtocolSparta m_protocolSparta;
+    Protocols::CProtocolSparta m_protocolSparta;
 };
+
+} // namespace OpenMAOR

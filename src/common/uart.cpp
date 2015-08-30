@@ -6,6 +6,8 @@
 #endif
 #define BAUD 57600
 
+namespace OpenMAOR
+{
 
 // =============================================================================
 
@@ -65,3 +67,7 @@ void CAsyncUart::ByteRecieved(uint8_t byte)
 {
     m_callback(byte);
 }
+
+// =============================================================================
+
+} // namespace OpenMAOR

@@ -4,6 +4,11 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
+namespace OpenMAOR
+{
+namespace Peripherals
+{
+
 template<> CButton* CSingleton<CButton>::m_instance = nullptr;
 
 CButton::CButton()
@@ -39,3 +44,6 @@ CLASS_ISR(CButton, INT1_vect)
         m_callback();
     }
 }
+
+} // namespace Peripherals
+} // namespace OpenMAOR

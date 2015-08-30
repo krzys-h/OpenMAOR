@@ -2,6 +2,11 @@
 
 #include "common/protocols/protocol_avr109.h"
 
+namespace OpenMAOR
+{
+namespace Protocols
+{
+
 enum AVR109Command
 {
     PROGRAMMER_NAME = 'S',
@@ -55,3 +60,6 @@ private:
 private:
     uint16_t m_address = 0;
 };
+
+} // namespace Protocols
+} // namespace OpenMAOR

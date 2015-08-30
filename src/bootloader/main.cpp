@@ -1,6 +1,11 @@
 #include "common/framework.h"
 #include "bootloader/protocol_avr109.h"
 
+namespace OpenMAOR
+{
+namespace Bootloader
+{
+
 class CBootloader : public CFrameworkBase
 {
 public:
@@ -77,10 +82,13 @@ protected:
     }
 
 protected:
-    CProtocolAVR109Bootloader m_protocolAVR109;
+    Protocols::CProtocolAVR109Bootloader m_protocolAVR109;
     static CBootloader* m_instance;
 };
 CBootloader* CBootloader::m_instance = nullptr;
+
+} // namespace Bootloader
+} // namespace OpenMAOR
 
 int main()
 {
@@ -89,6 +97,6 @@ int main()
     DDRC = 0xFF;
     DDRD = 0xFF;
 
-    CBootloader bootloader;
+    OpenMAOR::Bootloader::CBootloader bootloader;
     bootloader.Run();
 }

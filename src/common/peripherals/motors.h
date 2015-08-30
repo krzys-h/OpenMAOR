@@ -4,7 +4,12 @@
 
 #include "common/extra_section.h"
 
+namespace OpenMAOR
+{
 class CPeripherals;
+
+namespace Peripherals
+{
 
 /**
  * \class CMotors
@@ -13,7 +18,7 @@ class CPeripherals;
 class CMotors
 {
 private:
-    friend class CPeripherals;
+    friend class OpenMAOR::CPeripherals;
     CMotors();
 
 public:
@@ -66,3 +71,6 @@ private:
     inline static void SetPWM_B(uint16_t value) { OCR1B = value; }
     inline static void StopPWM_B() { TCCR1B &= ~(1<<COM1B1); }
 };
+
+} // namespace Peripherals
+} // namespace OpenMAOR

@@ -4,7 +4,13 @@
 
 #include "common/extra_section.h"
 
+
+namespace OpenMAOR
+{
 class CPeripherals;
+
+namespace Peripherals
+{
 
 // TODO: CSingleton jest tu tylko dla ISR, nie da sie tego zrobic inaczej?
 
@@ -15,7 +21,7 @@ class CPeripherals;
 class CButton : public CSingleton<CButton>
 {
 private:
-    friend class CPeripherals;
+    friend class OpenMAOR::CPeripherals;
     CButton() EXTRA;
 
 public:
@@ -29,3 +35,6 @@ public:
 private:
     ButtonCallback m_callback;
 };
+
+} // namespace Peripherals
+} // namespace OpenMAOR

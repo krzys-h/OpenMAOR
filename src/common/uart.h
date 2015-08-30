@@ -4,6 +4,9 @@
 #include "common/class_isr.h"
 #include "common/stdlib/queue.h"
 
+namespace OpenMAOR
+{
+
 /**
  * \class CUart
  * \brief Base class implementing interrupt-driven UART communication
@@ -45,3 +48,5 @@ protected:
 private:
     RecvCallbackFunc m_callback;
 };
+
+} // namespace OpenMAOR

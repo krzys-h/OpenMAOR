@@ -2,7 +2,12 @@
 #include "common/class_isr.h"
 #include <avr/io.h>
 
+namespace OpenMAOR
+{
 class CPeripherals;
+
+namespace Peripherals
+{
 
 /**
  * \class CLed
@@ -31,7 +36,7 @@ private:
 class CLeds
 {
 private:
-    friend class CPeripherals;
+    friend class OpenMAOR::CPeripherals;
     CLeds()
     : m_leds{
         CLed(DDRA, PORTA, 7),
@@ -54,3 +59,6 @@ public:
 private:
     CLed m_leds[4];
 };
+
+} // namespace Peripherals
+} // namespace OpenMAOR

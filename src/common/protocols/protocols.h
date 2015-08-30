@@ -2,6 +2,9 @@
 
 #include "common/protocols/protocol_base.h"
 
+namespace OpenMAOR
+{
+
 class CProtocol;
 
 /**
@@ -17,11 +20,13 @@ public:
     CProtocols(const CProtocols&) = delete;
     CProtocols& operator=(const CProtocols&) = delete;
 
-    void AddProtocol(CProtocol* protocol);
+    void AddProtocol(Protocols::CProtocol* protocol);
     bool RecieveData(uint8_t byte);
 
 private:
     static const uint8_t MAX_PROTOCOLS = 2;
-    StdLib::CBuffer<CProtocol*, MAX_PROTOCOLS> m_protocols;
-    CProtocol* m_currentProtocol = nullptr;
+    StdLib::CBuffer<Protocols::CProtocol*, MAX_PROTOCOLS> m_protocols;
+    Protocols::CProtocol* m_currentProtocol = nullptr;
 };
+
+} // namespace OpenMAOR

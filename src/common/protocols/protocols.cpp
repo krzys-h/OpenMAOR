@@ -1,6 +1,9 @@
 #include "common/protocols/protocols.h"
 
-void CProtocols::AddProtocol(CProtocol* protocol)
+namespace OpenMAOR
+{
+
+void CProtocols::AddProtocol(Protocols::CProtocol* protocol)
 {
     m_protocols.Add(protocol);
 }
@@ -26,3 +29,5 @@ bool CProtocols::RecieveData(uint8_t byte)
     }
     return false;
 }
+
+} // namespace OpenMAOR

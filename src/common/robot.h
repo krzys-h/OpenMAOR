@@ -3,6 +3,9 @@
 #include "common/framework.h"
 #include "common/protocols/protocol_avr109.h"
 
+namespace OpenMAOR
+{
+
 /**
  * \class CRobot
  * \brief Main robot class. You should inherit from this class and implement your own program in it
@@ -15,5 +18,7 @@ public:
     static void ExitToBootloader();
 
 private:
-    CProtocolAVR109 m_protocolAVR109;
+    Protocols::CProtocolAVR109 m_protocolAVR109;
 };
+
+} // namespace OpenMAOR

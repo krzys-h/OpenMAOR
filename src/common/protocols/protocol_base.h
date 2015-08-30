@@ -4,8 +4,12 @@
 #include <avr/boot.h> // dla SPM_PAGESIZE
 #include <stdint.h>
 
+namespace OpenMAOR
+{
 class CUart;
-class CRemoteCommandExecutor;
+
+namespace Protocols
+{
 
 /**
  * \class CProtocol
@@ -43,3 +47,6 @@ protected:
     /** NOTE: Because you can recieve packets only from one protocol at a time, this buffer is shared across all protocols. Be careful! **/
     static StdLib::CBuffer<uint8_t, MAX_PACKET_SIZE> m_buffer;
 };
+
+} // namespace Protocols
+} // namespace OpenMAOR

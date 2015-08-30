@@ -3,6 +3,11 @@
 #include "common/protocols/protocol_base.h"
 #include "common/extra_section.h"
 
+namespace OpenMAOR
+{
+namespace Protocols
+{
+
 // Wersja hardware, TODO: co się stanie jeśli zmienimy?
 #define SPARTA_VERSION_HARDWARE 23
 // Wersja firmware, TODO: co się stanie jeśli zmienimy?
@@ -134,3 +139,6 @@ private:
     void SendPacketNormal(SpartaCommand cmd, uint8_t param) EXTRA;
     void SendPacketStatus(SpartaCommand cmd, const uint8_t (&params)[12]) EXTRA;
 };
+
+} // namespace Protocols
+} // namespace OpenMAOR

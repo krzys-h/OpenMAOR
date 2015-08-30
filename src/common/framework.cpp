@@ -4,6 +4,9 @@
 #include <avr/sleep.h>
 #include <avr/wdt.h>
 
+namespace OpenMAOR
+{
+
 template<> CFrameworkBase* CSingleton<CFrameworkBase>::m_instance = nullptr;
 
 CFrameworkBase::CFrameworkBase()
@@ -25,3 +28,5 @@ void CFrameworkBase::IdleSleep()
     sleep_cpu();
     sleep_disable();
 }
+
+} // namespace OpenMAOR

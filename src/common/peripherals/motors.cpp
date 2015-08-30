@@ -1,9 +1,14 @@
 #include "common/peripherals/motors.h"
 
+// TODO: Test this code
+
+namespace OpenMAOR
+{
+namespace Peripherals
+{
+
 int16_t CMotors::m_speedLeft = 0;
 int16_t CMotors::m_speedRight = 0;
-
-// TODO: Test this code
 
 CMotors::CMotors()
 {
@@ -92,3 +97,6 @@ void CMotors::SetRight(int16_t value)
 
     m_speedRight = value;
 }
+
+} // namespace Peripherals
+} // namespace OpenMAOR

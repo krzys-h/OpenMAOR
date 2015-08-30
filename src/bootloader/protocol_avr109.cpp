@@ -5,6 +5,11 @@
 #include <avr/pgmspace.h>
 #include <avr/eeprom.h>
 
+namespace OpenMAOR
+{
+namespace Protocols
+{
+
 uint8_t CProtocolAVR109Bootloader::GetParameterCount(AVR109Command command)
 {
     if (command == START_MEMORY_WRITE && m_buffer.Size() >= 4)
@@ -180,3 +185,6 @@ void CProtocolAVR109Bootloader::StartMemoryWrite(AVR109MemoryType memory, uint16
     }
     m_uart->Send(OK);
 }
+
+} // namespace Protocols
+} // namespace OpenMAOR

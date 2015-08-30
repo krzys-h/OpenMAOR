@@ -3,6 +3,11 @@
 #include "common/framework.h"
 #include "common/uart.h"
 
+namespace OpenMAOR
+{
+namespace Protocols
+{
+
 bool CProtocolSparta::RecieveData(uint8_t data)
 {
     if (m_buffer.Size() == 0)
@@ -53,11 +58,11 @@ void CProtocolSparta::ProcessPacketNormal(SpartaCommand cmd, uint8_t param)
             break;
 
         case CMD_SILNIK_LEWY:
-            CFrameworkBase::motors.SetLeft(CMotors::PercentageToSpeed(param-100));
+            CFrameworkBase::motors.SetLeft(OpenMAOR::Peripherals::CMotors::PercentageToSpeed(param-100));
             break;
 
         case CMD_SILNIK_PRAWY:
-            CFrameworkBase::motors.SetRight(CMotors::PercentageToSpeed(param-100));
+            CFrameworkBase::motors.SetRight(OpenMAOR::Peripherals::CMotors::PercentageToSpeed(param-100));
             break;
 
         case CMD_SILNIK_STOP:
@@ -138,11 +143,11 @@ void CProtocolSparta::ProcessPacketStatus(uint8_t motorLeft, uint8_t motorRight)
 {
     if (motorLeft != SPARTA_STATUS_NO_MOTOR_CHANGE)
     {
-        CFrameworkBase::motors.SetLeft(CMotors::PercentageToSpeed(motorLeft-100));
+        CFrameworkBase::motors.SetLeft(OpenMAOR::Peripherals::CMotors::PercentageToSpeed(motorLeft-100));
     }
     if (motorRight != SPARTA_STATUS_NO_MOTOR_CHANGE)
     {
-        CFrameworkBase::motors.SetRight(CMotors::PercentageToSpeed(motorRight-100));
+        CFrameworkBase::motors.SetRight(OpenMAOR::Peripherals::CMotors::PercentageToSpeed(motorRight-100));
     }
 
     uint8_t data[12];
@@ -161,14 +166,14 @@ void CProtocolSparta::ProcessPacketStatus(uint8_t motorLeft, uint8_t motorRight)
         (CFrameworkBase::led[3].Get() << 3) ;
     data[3] = 0x00;
     data[4] = 0x00;
-    CSonar::SonarResult sonar = CFrameworkBase::sonar.Get();
+    OpenMAOR::Peripherals::CSonar::SonarResult sonar = CFrameworkBase::sonar.Get();
     data[5] = sonar.left;
     data[6] = sonar.right;
     data[7] = (0x0000 >> 2);
     data[8] = (0x0000 >> 2);
     data[9] = (0x0000 >> 2);
-    data[10] = CMotors::SpeedToPercentage(CFrameworkBase::motors.GetLeft())+100;
-    data[11] = CMotors::SpeedToPercentage(CFrameworkBase::motors.GetRight())+100;
+    data[10] = OpenMAOR::Peripherals::CMotors::SpeedToPercentage(CFrameworkBase::motors.GetLeft())+100;
+    data[11] = OpenMAOR::Peripherals::CMotors::SpeedToPercentage(CFrameworkBase::motors.GetRight())+100;
 
     SendPacketStatus(CMD_STAN_CZUJNIKI, data);
 }
@@ -204,3 +209,6 @@ void CProtocolSparta::SendPacketStatus(SpartaCommand cmd, const uint8_t (&params
 {
     SendPacketStatus(BROADCAST_ID, cmd, params);
 }
+
+} // namespace Protocols
+} // namespace OpenMAOR

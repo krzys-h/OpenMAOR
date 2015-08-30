@@ -6,7 +6,12 @@
 
 #include "common/extra_section.h"
 
+namespace OpenMAOR
+{
 class CPeripherals;
+
+namespace Peripherals
+{
 
 /**
  * \class CSonar
@@ -15,7 +20,7 @@ class CPeripherals;
 class CSonar
 {
 private:
-    friend class CPeripherals;
+    friend class OpenMAOR::CPeripherals;
     CSonar() EXTRA;
 
 public:
@@ -26,3 +31,6 @@ public:
     };
     SonarResult Get() EXTRA;
 };
+
+} // namespace Peripherals
+} // namespace OpenMAOR

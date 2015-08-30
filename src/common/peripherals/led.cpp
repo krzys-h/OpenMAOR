@@ -1,6 +1,11 @@
 #include "common/peripherals/led.h"
 #include <avr/io.h>
 
+namespace OpenMAOR
+{
+namespace Peripherals
+{
+
 CLed::CLed(volatile uint8_t& ddr, volatile uint8_t& port, uint8_t bit)
     : m_port(port)
     , m_bit(bit)
@@ -51,3 +56,6 @@ void CLeds::Toggle()
     for (uint8_t i = 0; i < 4; i++)
         m_leds[i].Toggle();
 }
+
+} // namespace Peripherals
+} // namespace OpenMAOR

@@ -9,6 +9,9 @@
 
 #include "common/extra_section.h"
 
+namespace OpenMAOR
+{
+
 /**
  * \class CPeripherals
  * \brief Provides access to all peripherals
@@ -16,13 +19,15 @@
 class CPeripherals
 {
 public:
-    static CButton button;
-    static CLeds led;
+    static Peripherals::CButton button;
+    static Peripherals::CLeds led;
 
-    static CMotors motors;
+    static Peripherals::CMotors motors;
 
-    static CLineSensors lineSensor;
-    static CSonar sonar;
+    static Peripherals::CLineSensors lineSensor;
+    static Peripherals::CSonar sonar;
 
-    static CTimer timer;
+    static Peripherals::CTimer timer;
 };
+
+} // namespace OpenMAOR

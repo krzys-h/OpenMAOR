@@ -1,11 +1,16 @@
 #include "common/peripherals/peripherals.h"
 
-CButton CPeripherals::button;
-CLeds CPeripherals::led;
+namespace OpenMAOR
+{
 
-CMotors CPeripherals::motors;
+Peripherals::CButton CPeripherals::button;
+Peripherals::CLeds CPeripherals::led;
 
-CLineSensors CPeripherals::lineSensor;
-CSonar CPeripherals::sonar;
+Peripherals::CMotors CPeripherals::motors;
 
-CTimer CPeripherals::timer;
+Peripherals::CLineSensors CPeripherals::lineSensor;
+Peripherals::CSonar CPeripherals::sonar;
+
+Peripherals::CTimer CPeripherals::timer;
+
+} // namespace OpenMAOR

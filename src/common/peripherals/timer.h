@@ -2,7 +2,12 @@
 #include "common/class_isr.h"
 #include <avr/io.h>
 
+namespace OpenMAOR
+{
 class CPeripherals;
+
+namespace Peripherals
+{
 
 /**
  * \class CTimer
@@ -11,7 +16,7 @@ class CPeripherals;
 class CTimer
 {
 private:
-    friend class CPeripherals;
+    friend class OpenMAOR::CPeripherals;
     CTimer();
 
 public:
@@ -27,3 +32,6 @@ public:
     static volatile uint8_t m_timer0InitValue;
     static volatile uint8_t m_timer0Counter;
 };
+
+} // namespace Peripherals
+} // namespace OpenMAOR

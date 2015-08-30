@@ -1,6 +1,6 @@
 #include "common/robot.h"
 
-class CProgram : public CRobot
+class CProgram : public OpenMAOR::CRobot
 {
 public:
     void Run()

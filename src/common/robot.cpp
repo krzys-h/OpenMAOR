@@ -1,6 +1,9 @@
 #include "common/robot.h"
 #include <avr/wdt.h>
 
+namespace OpenMAOR
+{
+
 CRobot::CRobot()
     : CFrameworkBase()
     , m_protocolAVR109(&uart)
@@ -17,3 +20,5 @@ void CRobot::ExitToBootloader()
     wdt_enable(WDTO_15MS);
     while (true);
 }
+
+} // namespace OpenMAOR

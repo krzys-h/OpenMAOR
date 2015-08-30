@@ -6,7 +6,12 @@
 
 #include "common/extra_section.h"
 
+namespace OpenMAOR
+{
 class CPeripherals;
+
+namespace Peripherals
+{
 
 /**
  * \class CLineSensor
@@ -33,7 +38,7 @@ private:
 class CLineSensors
 {
 private:
-    friend class CPeripherals;
+    friend class OpenMAOR::CPeripherals;
     CLineSensors() EXTRA
     : m_lineSensors{
         CLineSensor(DDRB, PORTB, PINB, 1),
@@ -67,3 +72,6 @@ public:
 private:
     CLineSensor m_lineSensors[4];
 };
+
+} // namespace Peripherals
+} // namespace OpenMAOR
