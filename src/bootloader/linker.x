@@ -6,7 +6,7 @@ MEMORY
 SECTIONS
 {
     .bootloader_extra : {
-        *(.bootloader_extra)
+        *(.text.bootloader_extra)
     }
 }
 INSERT BEFORE .text;
