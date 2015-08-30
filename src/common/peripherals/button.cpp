@@ -9,8 +9,6 @@ namespace OpenMAOR
 namespace Peripherals
 {
 
-template<> CButton* CSingleton<CButton>::m_instance = nullptr;
-
 CButton::CButton()
 {
     DDRD &= ~(_BV(3));

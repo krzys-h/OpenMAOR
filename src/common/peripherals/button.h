@@ -1,7 +1,5 @@
 #pragma once
-#include "common/singleton.h"
 #include "common/class_isr.h"
-
 #include "common/extra_section.h"
 
 
@@ -12,13 +10,11 @@ class CPeripherals;
 namespace Peripherals
 {
 
-// TODO: CSingleton jest tu tylko dla ISR, nie da sie tego zrobic inaczej?
-
 /**
  * \class CButton
  * \brief A button! :D
  */
-class CButton : public CSingleton<CButton>
+class CButton
 {
 private:
     friend class OpenMAOR::CPeripherals;
