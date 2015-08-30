@@ -40,7 +40,7 @@ public:
         return true;
     }
 
-protected:
+private:
     volatile T m_fifo[SIZE];
     volatile uint8_t m_head;
     volatile uint8_t m_tail;

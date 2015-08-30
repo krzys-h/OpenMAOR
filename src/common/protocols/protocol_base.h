@@ -35,6 +35,7 @@ public:
     CBufferedProtocol(CUart* uart) : CProtocol(uart) {};
 
 public:
+    //! Maximum size of one packet
     static const uint8_t MAX_PACKET_SIZE = 4 + SPM_PAGESIZE;
 
 protected:

@@ -42,6 +42,6 @@ public:
 protected:
     void ByteRecieved(uint8_t byte);
 
-protected:
+private:
     RecvCallbackFunc m_callback;
 };

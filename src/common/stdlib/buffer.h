@@ -44,7 +44,7 @@ public:
         return m_buffer[index];
     }
 
-protected:
+private:
     volatile T m_buffer[MAX_SIZE];
     volatile uint8_t m_size;
 };

@@ -124,7 +124,7 @@ public:
 
     bool RecieveData(uint8_t byte) EXTRA;
 
-protected:
+private:
     void ProcessPacket(SpartaProtocolType protocol, SpartaRobotID robotid, uint8_t data1, uint8_t data2) EXTRA;
     void ProcessPacketNormal(SpartaCommand cmd, uint8_t param) EXTRA;
     void ProcessPacketStatus(uint8_t param1, uint8_t param2) EXTRA;

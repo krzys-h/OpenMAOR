@@ -20,7 +20,7 @@ public:
     void AddProtocol(CProtocol* protocol);
     bool RecieveData(uint8_t byte);
 
-protected:
+private:
     static const uint8_t MAX_PROTOCOLS = 2;
     CBuffer<CProtocol*, MAX_PROTOCOLS> m_protocols;
     CProtocol* m_currentProtocol = nullptr;

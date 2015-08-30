@@ -14,14 +14,14 @@ class CPeripherals;
  */
 class CLineSensor
 {
-protected:
+private:
     friend class CLineSensors;
     CLineSensor(volatile uint8_t& ddr, volatile uint8_t& port, volatile uint8_t& pin, uint8_t bit) EXTRA;
 
 public:
     bool Get() EXTRA;
 
-protected:
+private:
     volatile uint8_t& m_pin;
     uint8_t m_bit;
 };
@@ -32,7 +32,7 @@ protected:
  */
 class CLineSensors
 {
-protected:
+private:
     friend class CPeripherals;
     CLineSensors() EXTRA
     : m_lineSensors{
@@ -64,6 +64,6 @@ public:
         }
     }
 
-protected:
+private:
     CLineSensor m_lineSensors[4];
 };

@@ -10,7 +10,7 @@ class CPeripherals;
  */
 class CTimer
 {
-protected:
+private:
     friend class CPeripherals;
     CTimer();
 
@@ -18,7 +18,7 @@ public:
     //! Sleep for a given amount of time in milliseconds (~0.1s accuracy, low power)
     static void Sleep(uint16_t delay);
 
-protected:
+private:
     static void StartTimer0(uint8_t initValue);
     static void StopTimer0();
 

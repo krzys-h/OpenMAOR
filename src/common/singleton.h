@@ -26,7 +26,7 @@
  */
 template<typename T> class CSingleton
 {
-protected:
+private:
     static T* m_instance;
 
 public:

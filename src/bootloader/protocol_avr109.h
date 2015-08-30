@@ -44,7 +44,7 @@ public:
 
     bool RecieveData(uint8_t byte);
 
-protected:
+private:
     uint8_t GetParameterCount(AVR109Command command);
     void ProcessPacket(AVR109Command command);
 
@@ -52,6 +52,6 @@ protected:
     void StartMemoryRead(AVR109MemoryType memory, uint16_t size);
     void StartMemoryWrite(AVR109MemoryType memory, uint16_t size);
 
-protected:
+private:
     uint16_t m_address = 0;
 };

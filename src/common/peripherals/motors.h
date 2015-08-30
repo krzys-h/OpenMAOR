@@ -12,7 +12,7 @@ class CPeripherals;
  */
 class CMotors
 {
-protected:
+private:
     friend class CPeripherals;
     CMotors();
 
@@ -53,11 +53,11 @@ public:
         return speed * 100 / MAX_SPEED;
     }
 
-protected:
+private:
     static int16_t m_speedLeft;
     static int16_t m_speedRight;
 
-protected:
+private:
     inline static void StartPWM_A() { TCCR1A |= (1<<COM1A1); }
     inline static void SetPWM_A(uint16_t value) { OCR1A = value; }
     inline static void StopPWM_A() { TCCR1A &= ~(1<<COM1A1); }

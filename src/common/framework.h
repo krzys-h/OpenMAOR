@@ -14,9 +14,11 @@
  */
 class CFrameworkBase : public CPeripherals, public CProtocols, protected CSingleton<CFrameworkBase>
 {
-friend class CSingleton<CFrameworkBase>;
-public:
+protected:
+    friend class CSingleton<CFrameworkBase>;
     CFrameworkBase();
+
+public:
     CFrameworkBase(const CFrameworkBase&) = delete;
     CFrameworkBase& operator=(const CFrameworkBase&) = delete;
 
@@ -31,12 +33,12 @@ public:
         }
     }
 
-protected:
+private:
     static void UartCallback(uint8_t data);
 
 public:
     CAsyncUart uart;
 
-protected:
+private:
     CProtocolSparta m_protocolSparta;
 };

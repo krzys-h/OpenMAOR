@@ -14,7 +14,7 @@ class CPeripherals;
  */
 class CButton : public CSingleton<CButton>
 {
-protected:
+private:
     friend class CPeripherals;
     CButton() EXTRA;
 
@@ -26,6 +26,6 @@ public:
 
     DECLARE_CLASS_ISR(INT1_vect);
 
-protected:
+private:
     ButtonCallback m_callback;
 };

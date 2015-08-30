@@ -14,7 +14,7 @@ class CPeripherals;
  */
 class CSonar
 {
-protected:
+private:
     friend class CPeripherals;
     CSonar() EXTRA;
 
@@ -25,5 +25,4 @@ public:
         uint8_t right;
     };
     SonarResult Get() EXTRA;
-
 };

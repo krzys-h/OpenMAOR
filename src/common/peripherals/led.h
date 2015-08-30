@@ -10,7 +10,7 @@ class CPeripherals;
  */
 class CLed
 {
-protected:
+private:
     friend class CLeds;
     CLed(volatile uint8_t& ddr, volatile uint8_t& port, uint8_t bit);
 
@@ -19,7 +19,7 @@ public:
     bool Get();
     void Toggle();
 
-protected:
+private:
     volatile uint8_t& m_port;
     uint8_t m_bit;
 };
@@ -30,7 +30,7 @@ protected:
  */
 class CLeds
 {
-protected:
+private:
     friend class CPeripherals;
     CLeds()
     : m_leds{
@@ -51,6 +51,6 @@ public:
     void Set(bool led0, bool led1, bool led2, bool led3);
     void Toggle();
 
-protected:
+private:
     CLed m_leds[4];
 };
