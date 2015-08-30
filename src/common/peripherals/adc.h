@@ -48,5 +48,7 @@ private:
     static uint8_t m_measuredCount;
 };
 
+const int ADC_MOTOR_MAX_VALUE = 200;
+
 } // namespace Peripherals
 } // namespace OpenMAOR

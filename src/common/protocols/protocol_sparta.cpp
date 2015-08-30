@@ -3,6 +3,8 @@
 #include "common/framework.h"
 #include "common/uart.h"
 
+using namespace OpenMAOR::Peripherals;
+
 namespace OpenMAOR
 {
 namespace Protocols
@@ -58,11 +60,11 @@ void CProtocolSparta::ProcessPacketNormal(SpartaCommand cmd, uint8_t param)
             break;
 
         case CMD_SILNIK_LEWY:
-            CFrameworkBase::motors.SetLeft(OpenMAOR::Peripherals::CMotors::PercentageToSpeed(param-100));
+            CFrameworkBase::motors.SetLeft(::CMotors::PercentageToSpeed(param-100));
             break;
 
         case CMD_SILNIK_PRAWY:
-            CFrameworkBase::motors.SetRight(OpenMAOR::Peripherals::CMotors::PercentageToSpeed(param-100));
+            CFrameworkBase::motors.SetRight(::CMotors::PercentageToSpeed(param-100));
             break;
 
         case CMD_SILNIK_STOP:
@@ -82,8 +84,7 @@ void CProtocolSparta::ProcessPacketNormal(SpartaCommand cmd, uint8_t param)
             break;
 
         case CMD_STAN_BATERII:
-            //TODO
-            SendPacketNormal(CMD_STAN_BATERII, 0xFF);
+            SendPacketNormal(CMD_STAN_BATERII, CFrameworkBase::adc.Get(CADC::ADCChannel::ADC_BATTERY)/10);
             break;
 
         case CMD_STAN_CZ_LINII:
@@ -98,13 +99,11 @@ void CProtocolSparta::ProcessPacketNormal(SpartaCommand cmd, uint8_t param)
             break;
 
         case CMD_STAN_PRAD_L:
-            //TODO
-            SendPacketNormal(CMD_STAN_PRAD_L, 0x00);
+            SendPacketNormal(CMD_STAN_PRAD_L, CFrameworkBase::adc.Get(CADC::ADCChannel::ADC_MOTOR_LEFT)*100/ADC_MOTOR_MAX_VALUE);
             break;
 
         case CMD_STAN_PRAD_R:
-            //TODO
-            SendPacketNormal(CMD_STAN_PRAD_R, 0x00);
+            SendPacketNormal(CMD_STAN_PRAD_R, CFrameworkBase::adc.Get(CADC::ADCChannel::ADC_MOTOR_RIGHT)*100/ADC_MOTOR_MAX_VALUE);
             break;
 
         case CMD_STAN_SONAR_L:
@@ -143,11 +142,11 @@ void CProtocolSparta::ProcessPacketStatus(uint8_t motorLeft, uint8_t motorRight)
 {
     if (motorLeft != SPARTA_STATUS_NO_MOTOR_CHANGE)
     {
-        CFrameworkBase::motors.SetLeft(OpenMAOR::Peripherals::CMotors::PercentageToSpeed(motorLeft-100));
+        CFrameworkBase::motors.SetLeft(::CMotors::PercentageToSpeed(motorLeft-100));
     }
     if (motorRight != SPARTA_STATUS_NO_MOTOR_CHANGE)
     {
-        CFrameworkBase::motors.SetRight(OpenMAOR::Peripherals::CMotors::PercentageToSpeed(motorRight-100));
+        CFrameworkBase::motors.SetRight(::CMotors::PercentageToSpeed(motorRight-100));
     }
 
     uint8_t data[12];
@@ -164,16 +163,16 @@ void CProtocolSparta::ProcessPacketStatus(uint8_t motorLeft, uint8_t motorRight)
         (CFrameworkBase::led[1].Get() << 1) |
         (CFrameworkBase::led[2].Get() << 2) |
         (CFrameworkBase::led[3].Get() << 3) ;
-    data[3] = 0x00;
-    data[4] = 0x00;
-    OpenMAOR::Peripherals::CSonar::SonarResult sonar = CFrameworkBase::sonar.Get();
+    data[3] = CFrameworkBase::adc.Get(CADC::ADCChannel::ADC_MOTOR_LEFT)*100/ADC_MOTOR_MAX_VALUE;
+    data[4] = CFrameworkBase::adc.Get(CADC::ADCChannel::ADC_MOTOR_RIGHT)*100/ADC_MOTOR_MAX_VALUE;
+    ::CSonar::SonarResult sonar = CFrameworkBase::sonar.Get();
     data[5] = sonar.left;
     data[6] = sonar.right;
-    data[7] = (0x0000 >> 2);
-    data[8] = (0x0000 >> 2);
-    data[9] = (0x0000 >> 2);
-    data[10] = OpenMAOR::Peripherals::CMotors::SpeedToPercentage(CFrameworkBase::motors.GetLeft())+100;
-    data[11] = OpenMAOR::Peripherals::CMotors::SpeedToPercentage(CFrameworkBase::motors.GetRight())+100;
+    data[7] = (CFrameworkBase::adc.Get(CADC::ADCChannel::ADC_CUSTOM0) >> 2);
+    data[8] = (CFrameworkBase::adc.Get(CADC::ADCChannel::ADC_CUSTOM1) >> 2);
+    data[9] = (CFrameworkBase::adc.Get(CADC::ADCChannel::ADC_CUSTOM2) >> 2);
+    data[10] = ::CMotors::SpeedToPercentage(CFrameworkBase::motors.GetLeft())+100;
+    data[11] = ::CMotors::SpeedToPercentage(CFrameworkBase::motors.GetRight())+100;
 
     SendPacketStatus(CMD_STAN_CZUJNIKI, data);
 }
