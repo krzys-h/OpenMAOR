@@ -20,18 +20,22 @@ private:
     CADC();
 
 public:
+    /**
+     * \enum ADCChannel
+     * \brief ADC channel, see CADC::Get
+     */
     enum ADCChannel
     {
-        ADC_CUSTOM0 = 0,
-        ADC_CUSTOM1 = 1,
-        ADC_CUSTOM2 = 2,
-        ADC_BATTERY = 3,
-        ADC_MOTOR_LEFT = 4,
-        ADC_MOTOR_RIGHT = 5,
+        ADC_CUSTOM0 = 0, //!< Custom ADC0 channel
+        ADC_CUSTOM1 = 1, //!< Custom ADC1 channel
+        ADC_CUSTOM2 = 2, //!< Custom ADC2 channel
+        ADC_BATTERY = 3, //!< Battery channel
+        ADC_MOTOR_LEFT = 4, //!< Left motor channel
+        ADC_MOTOR_RIGHT = 5, //!< Right motor channel
         TOTAL_ADC_CHANNELS
     };
 
-    // Return a value from given ADC channel. Keep in mind this value is averaged already.
+    //! Return a value from given ADC channel. Keep in mind this value is averaged already.
     static uint16_t Get(ADCChannel channel);
 
     DECLARE_CLASS_ISR(ADC_vect);
