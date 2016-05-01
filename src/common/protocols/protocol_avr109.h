@@ -13,11 +13,9 @@ namespace Protocols
  *
  * The only task of this implementation is to jump to bootloader when AVR109 transmission starts
  */
-class CProtocolAVR109 : public CBufferedProtocol
+class CProtocolAVR109 : public CProtocol
 {
 public:
-    CProtocolAVR109(CUart* uart) : CBufferedProtocol(uart) {};
-
     bool RecieveData(uint8_t byte);
 };
 

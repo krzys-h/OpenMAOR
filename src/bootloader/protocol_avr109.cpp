@@ -10,11 +10,55 @@ namespace OpenMAOR
 namespace Protocols
 {
 
-uint8_t CProtocolAVR109Bootloader::GetParameterCount(AVR109Command command)
+namespace // anonymous namespace
 {
-    if (command == START_MEMORY_WRITE && m_buffer.Size() >= 4)
+
+enum AVR109Command
+{
+    PROGRAMMER_NAME = 'S',
+    PROGRAMMER_VERSION = 'V',
+    CHIP_SIGNATURE = 's',
+    PROGRAMMER_TYPE = 'p',
+    PROGRAMMING_ENTER = 'P',
+    PROGRAMMING_LEAVE = 'L',
+    PROGRAMMER_SUPPORTED_DEVICE_LIST = 't',
+    SET_DEVICE = 'T',
+
+    // TODO: Sprawdzić co to miało robić :P
+    UNKNOWN1 = 'x',
+    UNKNOWN2 = 'y',
+
+    PROGRAMMER_CHECK_BUFFER_SUPPORT = 'b',
+    SET_ADDRESS = 'A',
+    PROGRAMMER_CHECK_AUTOINCREMENT = 'a',
+
+    START_MEMORY_READ = 'g',
+    START_MEMORY_WRITE = 'B',
+    CHIP_ERASE = 'e',
+
+    EXIT_BOOTLOADER = 'E',
+
+
+    OK = '\r'
+};
+
+enum AVR109MemoryType
+{
+    MEMORY_FLASH = 'F',
+    MEMORY_EEPROM = 'E'
+};
+    
+//! Maximum size of one packet
+const uint8_t MAX_PACKET_SIZE = 4 + SPM_PAGESIZE;
+
+//! Recieved packet buffer
+StdLib::CBuffer<uint8_t, MAX_PACKET_SIZE> buffer;
+
+uint8_t GetParameterCount(AVR109Command command)
+{
+    if (command == START_MEMORY_WRITE && buffer.Size() >= 4)
     {
-        return 3+((m_buffer[1] << 8) | m_buffer[2]);
+        return 3+((buffer[1] << 8) | buffer[2]);
     }
 
     switch (command)
@@ -36,96 +80,58 @@ uint8_t CProtocolAVR109Bootloader::GetParameterCount(AVR109Command command)
     }
 }
 
-bool CProtocolAVR109Bootloader::RecieveData(uint8_t data)
+uint16_t address = 0;
+
+void StartMemoryRead(AVR109MemoryType memory, uint16_t size)
 {
-    m_buffer.Add(data);
-    if (m_buffer.Size() >= GetParameterCount(static_cast<AVR109Command>(m_buffer[0]))+1)
+    if(memory == MEMORY_FLASH)
     {
-        ProcessPacket(static_cast<AVR109Command>(m_buffer[0]));
-        m_buffer.Flush();
+        for (uint8_t i = 0; i < size; i += 2, address++)
+        {
+            uint16_t data = pgm_read_word(address << 1);
+            CUart::Send(data);
+            CUart::Send(data >> 8);
+        }
     }
-    else
+    else if(memory == MEMORY_EEPROM)
     {
-        return true;
-    }
-    return false;
-}
-
-void CProtocolAVR109Bootloader::ProcessPacket(AVR109Command command)
-{
-    switch (command)
-    {
-        case PROGRAMMER_NAME:
-            m_uart->SendString("MAOR12T");
-            break;
-
-        case PROGRAMMER_VERSION:
-            m_uart->SendString("01"); // => 0.1
-            break;
-
-        case CHIP_SIGNATURE:
-            m_uart->Send(SIGNATURE_2);
-            m_uart->Send(SIGNATURE_1);
-            m_uart->Send(SIGNATURE_0);
-            break;
-
-        case PROGRAMMER_TYPE:
-            m_uart->Send('S'); // serial
-            break;
-
-        case PROGRAMMING_ENTER:
-        case PROGRAMMING_LEAVE:
-            m_uart->Send(OK);
-            break;
-
-        case PROGRAMMER_SUPPORTED_DEVICE_LIST:
-            //m_uart->Send(0x75); // ATMega16, bootloader
-            m_uart->Send(0x73); // ATMega32, bootloader
-            m_uart->Send(0); // end of data
-            break;
-
-        case UNKNOWN1:
-        case UNKNOWN2:
-        case SET_DEVICE:
-            m_uart->Send(OK);
-            break;
-
-        case PROGRAMMER_CHECK_BUFFER_SUPPORT:
-            m_uart->Send('Y');
-            m_uart->Send((SPM_PAGESIZE >> 8) & 0xFF);
-            m_uart->Send(SPM_PAGESIZE & 0xFF);
-            break;
-
-        case SET_ADDRESS:
-            m_address = (m_buffer[1] << 8) | m_buffer[2];
-            m_uart->Send(OK);
-            break;
-
-        case PROGRAMMER_CHECK_AUTOINCREMENT:
-            m_uart->Send('Y');
-            break;
-
-        case START_MEMORY_READ:
-        case START_MEMORY_WRITE:
-            StartMemoryOperation(command, static_cast<AVR109MemoryType>(m_buffer[3]), (m_buffer[1] << 8) | m_buffer[2]);
-            break;
-
-        case CHIP_ERASE:
-            // Na razie to ignorujemy
-            m_uart->Send(OK);
-            break;
-
-        case EXIT_BOOTLOADER:
-            // Ignorujemy
-            m_uart->Send(OK);
-            break;
-
-        default:
-            m_uart->Send('?');
+        for (uint8_t i = 0; i < size; i++, address++)
+        {
+            CUart::Send(eeprom_read_byte((uint8_t*)address));
+        }
     }
 }
 
-void CProtocolAVR109Bootloader::StartMemoryOperation(AVR109Command command, AVR109MemoryType memory, uint16_t size)
+void StartMemoryWrite(AVR109MemoryType memory, uint16_t size)
+{
+    if (memory == MEMORY_FLASH)
+    {
+        for (uint8_t i = size; i < SPM_PAGESIZE; i++)
+            buffer.Add(0xFF);
+
+        uint16_t startAddress = address;
+        boot_page_erase_safe(address << 1);
+        for (uint16_t i = 0; i < SPM_PAGESIZE; i += 2, address++)
+        {
+            uint16_t data = (buffer[4+i] & 0xFF) | (buffer[4+i+1] << 8);
+            boot_page_fill_safe(address << 1, data);
+        }
+        boot_page_write_safe(startAddress << 1);
+        boot_rww_enable_safe();
+        address = startAddress + (size/2);
+        boot_spm_busy_wait();
+    }
+    else if (memory == MEMORY_EEPROM)
+    {
+        for (uint8_t i = 0; i < size; i++, address++)
+        {
+            eeprom_update_byte((uint8_t*)address, buffer[4+i]);
+        }
+    }
+    CUart::Send(OK);
+}
+
+void StartMemoryOperation(AVR109Command command, AVR109MemoryType memory, uint16_t size)
 {
     if (command == START_MEMORY_READ)
     {
@@ -137,53 +143,95 @@ void CProtocolAVR109Bootloader::StartMemoryOperation(AVR109Command command, AVR1
     }
 }
 
-void CProtocolAVR109Bootloader::StartMemoryRead(AVR109MemoryType memory, uint16_t size)
+void ProcessPacket(AVR109Command command)
 {
-    if(memory == MEMORY_FLASH)
+    switch (command)
     {
-        for (uint8_t i = 0; i < size; i += 2, m_address++)
-        {
-            uint16_t data = pgm_read_word(m_address << 1);
-            m_uart->Send(data);
-            m_uart->Send(data >> 8);
-        }
-    }
-    else if(memory == MEMORY_EEPROM)
-    {
-        for (uint8_t i = 0; i < size; i++, m_address++)
-        {
-            m_uart->Send(eeprom_read_byte((uint8_t*)m_address));
-        }
+        case PROGRAMMER_NAME:
+            CUart::SendString("MAOR12T");
+            break;
+
+        case PROGRAMMER_VERSION:
+            CUart::SendString("01"); // => 0.1
+            break;
+
+        case CHIP_SIGNATURE:
+            CUart::Send(SIGNATURE_2);
+            CUart::Send(SIGNATURE_1);
+            CUart::Send(SIGNATURE_0);
+            break;
+
+        case PROGRAMMER_TYPE:
+            CUart::Send('S'); // serial
+            break;
+
+        case PROGRAMMING_ENTER:
+        case PROGRAMMING_LEAVE:
+            CUart::Send(OK);
+            break;
+
+        case PROGRAMMER_SUPPORTED_DEVICE_LIST:
+            //CUart::Send(0x75); // ATMega16, bootloader
+            CUart::Send(0x73); // ATMega32, bootloader
+            CUart::Send(0); // end of data
+            break;
+
+        case UNKNOWN1:
+        case UNKNOWN2:
+        case SET_DEVICE:
+            CUart::Send(OK);
+            break;
+
+        case PROGRAMMER_CHECK_BUFFER_SUPPORT:
+            CUart::Send('Y');
+            CUart::Send((SPM_PAGESIZE >> 8) & 0xFF);
+            CUart::Send(SPM_PAGESIZE & 0xFF);
+            break;
+
+        case SET_ADDRESS:
+            address = (buffer[1] << 8) | buffer[2];
+            CUart::Send(OK);
+            break;
+
+        case PROGRAMMER_CHECK_AUTOINCREMENT:
+            CUart::Send('Y');
+            break;
+
+        case START_MEMORY_READ:
+        case START_MEMORY_WRITE:
+            StartMemoryOperation(command, static_cast<AVR109MemoryType>(buffer[3]), (buffer[1] << 8) | buffer[2]);
+            break;
+
+        case CHIP_ERASE:
+            // Na razie to ignorujemy
+            CUart::Send(OK);
+            break;
+
+        case EXIT_BOOTLOADER:
+            // Ignorujemy
+            CUart::Send(OK);
+            break;
+
+        default:
+            CUart::Send('?');
     }
 }
 
-void CProtocolAVR109Bootloader::StartMemoryWrite(AVR109MemoryType memory, uint16_t size)
-{
-    if (memory == MEMORY_FLASH)
-    {
-        for (uint8_t i = size; i < SPM_PAGESIZE; i++)
-            m_buffer.Add(0xFF);
+}
 
-        uint16_t startAddress = m_address;
-        boot_page_erase_safe(m_address << 1);
-        for (uint16_t i = 0; i < SPM_PAGESIZE; i += 2, m_address++)
-        {
-            uint16_t data = (m_buffer[4+i] & 0xFF) | (m_buffer[4+i+1] << 8);
-            boot_page_fill_safe(m_address << 1, data);
-        }
-        boot_page_write_safe(startAddress << 1);
-        boot_rww_enable_safe();
-        m_address = startAddress + (size/2);
-        boot_spm_busy_wait();
-    }
-    else if (memory == MEMORY_EEPROM)
+bool CProtocolAVR109Bootloader::RecieveData(uint8_t data)
+{
+    buffer.Add(data);
+    if (buffer.Size() >= GetParameterCount(static_cast<AVR109Command>(buffer[0]))+1)
     {
-        for (uint8_t i = 0; i < size; i++, m_address++)
-        {
-            eeprom_update_byte((uint8_t*)m_address, m_buffer[4+i]);
-        }
+        ProcessPacket(static_cast<AVR109Command>(buffer[0]));
+        buffer.Flush();
     }
-    m_uart->Send(OK);
+    else
+    {
+        return true;
+    }
+    return false;
 }
 
 } // namespace Protocols

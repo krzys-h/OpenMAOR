@@ -121,22 +121,15 @@ enum SpartaCommand {
     CMD_HARDWARE_VER = 236, // K<->R, odpowiedź tym samym
 };
 
-class CProtocolSparta : public CBufferedProtocol
+class CProtocolSparta : public CProtocol
 {
 public:
-    CProtocolSparta(CUart* uart) : CBufferedProtocol(uart) {};
-
     bool RecieveData(uint8_t byte);
 
-private:
-    void ProcessPacket(SpartaProtocolType protocol, SpartaRobotID robotid, uint8_t data1, uint8_t data2);
-    void ProcessPacketNormal(SpartaCommand cmd, uint8_t param);
-    void ProcessPacketStatus(uint8_t param1, uint8_t param2);
-
-    void SendPacketNormal(SpartaRobotID senderid, SpartaCommand cmd, uint8_t param);
-    void SendPacketStatus(SpartaRobotID senderid, SpartaCommand cmd, const uint8_t (&params)[12]);
-    void SendPacketNormal(SpartaCommand cmd, uint8_t param);
-    void SendPacketStatus(SpartaCommand cmd, const uint8_t (&params)[12]);
+    static void SendPacketNormal(SpartaRobotID senderid, SpartaCommand cmd, uint8_t param);
+    static void SendPacketStatus(SpartaRobotID senderid, SpartaCommand cmd, const uint8_t (&params)[12]);
+    static void SendPacketNormal(SpartaCommand cmd, uint8_t param);
+    static void SendPacketStatus(SpartaCommand cmd, const uint8_t (&params)[12]);
 };
 
 } // namespace Protocols

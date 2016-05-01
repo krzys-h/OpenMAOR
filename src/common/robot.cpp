@@ -6,7 +6,7 @@ namespace OpenMAOR
 
 CRobot::CRobot()
     : CFrameworkBase()
-    , m_protocolAVR109(&uart)
+    , m_protocolAVR109()
 {
     AddProtocol(&m_protocolAVR109);
     sei();

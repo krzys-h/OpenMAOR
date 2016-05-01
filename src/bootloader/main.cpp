@@ -11,7 +11,7 @@ class CBootloader : public CFrameworkBase
 {
 public:
     CBootloader()
-    : m_protocolAVR109(&uart)
+    : m_protocolAVR109()
     {
         m_instance = this;
 

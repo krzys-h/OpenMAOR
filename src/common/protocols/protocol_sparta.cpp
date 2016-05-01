@@ -10,53 +10,27 @@ namespace OpenMAOR
 namespace Protocols
 {
 
-bool CProtocolSparta::RecieveData(uint8_t data)
+namespace // anonymous namespace
 {
-    if (m_buffer.Size() == 0)
-    {
-        if (data != SPARTA_HEADER && data != SPARTA_HEADER_STATUS)
-            return false;
-    }
-    m_buffer.Add(data);
-    if (m_buffer.Size() == 4)
-    {
-        ProcessPacket(static_cast<SpartaProtocolType>(m_buffer[0]), static_cast<SpartaRobotID>(m_buffer[1]), m_buffer[2], m_buffer[3]);
-        m_buffer.Flush();
-        return false;
-    }
-    return true;
-}
 
-void CProtocolSparta::ProcessPacket(SpartaProtocolType protocol, SpartaRobotID robotid, uint8_t data1, uint8_t data2)
-{
-    // Sprawdzanie robotid pomijamy (na co nam to? :P)
+//! Recieved packet buffer
+static StdLib::CBuffer<uint8_t, 4> m_buffer;
 
-    switch (protocol)
-    {
-        case SPARTA_HEADER:
-            ProcessPacketNormal(static_cast<SpartaCommand>(data1), data2);
-            break;
-
-        case SPARTA_HEADER_STATUS:
-            ProcessPacketStatus(data1, data2);
-            break;
-    }
-}
-void CProtocolSparta::ProcessPacketNormal(SpartaCommand cmd, uint8_t param)
+void ProcessPacketNormal(SpartaCommand cmd, uint8_t param)
 {
     switch (cmd)
     {
         case CMD_ZWROC_SWOJE_ID:
         case CMD_ODBIERZ_NOWE_ID: // Nie obslugujemy ID
-            SendPacketNormal(CMD_ZWRACAM_ID, BROADCAST_ID);
+            CProtocolSparta::SendPacketNormal(CMD_ZWRACAM_ID, BROADCAST_ID);
             break;
 
         case CMD_FIRMWARE_VER:
-            SendPacketNormal(CMD_FIRMWARE_VER, SPARTA_VERSION_FIRMWARE);
+            CProtocolSparta::SendPacketNormal(CMD_FIRMWARE_VER, SPARTA_VERSION_FIRMWARE);
             break;
 
         case CMD_HARDWARE_VER:
-            SendPacketNormal(CMD_HARDWARE_VER, SPARTA_VERSION_HARDWARE);
+            CProtocolSparta::SendPacketNormal(CMD_HARDWARE_VER, SPARTA_VERSION_HARDWARE);
             break;
 
         case CMD_SILNIK_LEWY:
@@ -84,12 +58,12 @@ void CProtocolSparta::ProcessPacketNormal(SpartaCommand cmd, uint8_t param)
             break;
 
         case CMD_STAN_BATERII:
-            SendPacketNormal(CMD_STAN_BATERII, CFrameworkBase::adc.Get(CADC::ADCChannel::ADC_BATTERY)/10);
+            CProtocolSparta::SendPacketNormal(CMD_STAN_BATERII, CFrameworkBase::adc.Get(CADC::ADCChannel::ADC_BATTERY)/10);
             break;
 
         case CMD_STAN_CZ_LINII:
             CFrameworkBase::lineSensor.Enable(true);
-            SendPacketNormal(CMD_STAN_CZ_LINII,
+            CProtocolSparta::SendPacketNormal(CMD_STAN_CZ_LINII,
                 (CFrameworkBase::lineSensor[0].Get() << 0) |
                 (CFrameworkBase::lineSensor[1].Get() << 1) |
                 (CFrameworkBase::lineSensor[2].Get() << 2) |
@@ -99,19 +73,19 @@ void CProtocolSparta::ProcessPacketNormal(SpartaCommand cmd, uint8_t param)
             break;
 
         case CMD_STAN_PRAD_L:
-            SendPacketNormal(CMD_STAN_PRAD_L, CFrameworkBase::adc.Get(CADC::ADCChannel::ADC_MOTOR_LEFT)*100/ADC_MOTOR_MAX_VALUE);
+            CProtocolSparta::SendPacketNormal(CMD_STAN_PRAD_L, CFrameworkBase::adc.Get(CADC::ADCChannel::ADC_MOTOR_LEFT)*100/ADC_MOTOR_MAX_VALUE);
             break;
 
         case CMD_STAN_PRAD_R:
-            SendPacketNormal(CMD_STAN_PRAD_R, CFrameworkBase::adc.Get(CADC::ADCChannel::ADC_MOTOR_RIGHT)*100/ADC_MOTOR_MAX_VALUE);
+            CProtocolSparta::SendPacketNormal(CMD_STAN_PRAD_R, CFrameworkBase::adc.Get(CADC::ADCChannel::ADC_MOTOR_RIGHT)*100/ADC_MOTOR_MAX_VALUE);
             break;
 
         case CMD_STAN_SONAR_L:
-            SendPacketNormal(CMD_STAN_SONAR_L, CFrameworkBase::sonar.Get().left);
+            CProtocolSparta::SendPacketNormal(CMD_STAN_SONAR_L, CFrameworkBase::sonar.Get().left);
             break;
 
         case CMD_STAN_SONAR_R:
-            SendPacketNormal(CMD_STAN_SONAR_R, CFrameworkBase::sonar.Get().right);
+            CProtocolSparta::SendPacketNormal(CMD_STAN_SONAR_R, CFrameworkBase::sonar.Get().right);
             break;
 
         // Nie obslugujemy wgrywania programu ze SPAR-TA (jeszcze)
@@ -124,8 +98,8 @@ void CProtocolSparta::ProcessPacketNormal(SpartaCommand cmd, uint8_t param)
         case CMD_ROZKAZ_USTAW_ADRES_H:
         case CMD_ROZKAZ_USTAW_ADRES_L:
         case CMD_ROZKAZ_ODBIERZ_BAJT:
-            SendPacketNormal(CMD_ERROR_MAX_PGM_SIZE_EXCEEDED, 0x00);
-            SendPacketNormal(CMD_CRC_ERROR, 0x00);
+            CProtocolSparta::SendPacketNormal(CMD_ERROR_MAX_PGM_SIZE_EXCEEDED, 0x00);
+            CProtocolSparta::SendPacketNormal(CMD_CRC_ERROR, 0x00);
             break;
 
         case CMD_ROZKAZ_AKTYWACJA:
@@ -138,7 +112,7 @@ void CProtocolSparta::ProcessPacketNormal(SpartaCommand cmd, uint8_t param)
     }
 }
 
-void CProtocolSparta::ProcessPacketStatus(uint8_t motorLeft, uint8_t motorRight)
+void ProcessPacketStatus(uint8_t motorLeft, uint8_t motorRight)
 {
     if (motorLeft != SPARTA_STATUS_NO_MOTOR_CHANGE)
     {
@@ -174,29 +148,64 @@ void CProtocolSparta::ProcessPacketStatus(uint8_t motorLeft, uint8_t motorRight)
     data[10] = ::CMotors::SpeedToPercentage(CFrameworkBase::motors.GetLeft())+100;
     data[11] = ::CMotors::SpeedToPercentage(CFrameworkBase::motors.GetRight())+100;
 
-    SendPacketStatus(CMD_STAN_CZUJNIKI, data);
+    CProtocolSparta::SendPacketStatus(CMD_STAN_CZUJNIKI, data);
+}
+
+void ProcessPacket(SpartaProtocolType protocol, SpartaRobotID robotid, uint8_t data1, uint8_t data2)
+{
+    // Sprawdzanie robotid pomijamy (na co nam to? :P)
+
+    switch (protocol)
+    {
+        case SPARTA_HEADER:
+            ProcessPacketNormal(static_cast<SpartaCommand>(data1), data2);
+            break;
+
+        case SPARTA_HEADER_STATUS:
+            ProcessPacketStatus(data1, data2);
+            break;
+    }
+}
+
+} // anonymous namespace
+
+bool CProtocolSparta::RecieveData(uint8_t data)
+{
+    if (m_buffer.Size() == 0)
+    {
+        if (data != SPARTA_HEADER && data != SPARTA_HEADER_STATUS)
+            return false;
+    }
+    m_buffer.Add(data);
+    if (m_buffer.Size() == 4)
+    {
+        ProcessPacket(static_cast<SpartaProtocolType>(m_buffer[0]), static_cast<SpartaRobotID>(m_buffer[1]), m_buffer[2], m_buffer[3]);
+        m_buffer.Flush();
+        return false;
+    }
+    return true;
 }
 
 void CProtocolSparta::SendPacketNormal(SpartaRobotID senderid, SpartaCommand cmd, uint8_t param)
 {
-    m_uart->Send(SPARTA_HEADER);
-    m_uart->Send(senderid);
-    m_uart->Send(cmd);
-    m_uart->Send(param);
+    CUart::Send(SPARTA_HEADER);
+    CUart::Send(senderid);
+    CUart::Send(cmd);
+    CUart::Send(param);
 }
 
 void CProtocolSparta::SendPacketStatus(SpartaRobotID senderid, SpartaCommand cmd, const uint8_t (&params)[12])
 {
-    m_uart->Send(SPARTA_HEADER_STATUS);
-    m_uart->Send(senderid);
-    m_uart->Send(cmd);
+    CUart::Send(SPARTA_HEADER_STATUS);
+    CUart::Send(senderid);
+    CUart::Send(cmd);
     uint8_t checksum = 0;
     for(uint8_t i = 0; i < 12; i++)
     {
         checksum += params[i];
-        m_uart->Send(params[i]);
+        CUart::Send(params[i]);
     }
-    m_uart->Send(checksum);
+    CUart::Send(checksum);
 }
 
 void CProtocolSparta::SendPacketNormal(SpartaCommand cmd, uint8_t param)

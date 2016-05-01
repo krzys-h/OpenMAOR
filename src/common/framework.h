@@ -25,7 +25,7 @@ protected:
     friend class CSingleton<CFrameworkBase>;
     CFrameworkBase()
         : uart(UartCallback)
-        , m_protocolSparta(&uart)
+        , m_protocolSparta()
     {
         AddProtocol(&m_protocolSparta);
     }
