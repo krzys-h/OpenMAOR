@@ -1,6 +1,5 @@
 #pragma once
 #include "common/class_isr.h"
-#include "common/extra_section.h"
 
 
 namespace OpenMAOR
@@ -18,13 +17,30 @@ class CButton
 {
 private:
     friend class OpenMAOR::CPeripherals;
-    CButton() EXTRA;
+    CButton()
+    {
+        DDRD &= ~(_BV(3));
+        PORTD |= _BV(3);
+
+        // Enable INT1
+        GICR |= _BV(INT1);
+
+        // Trigger INT1 on falling edge
+        MCUCR |= _BV(ISC11);
+        MCUCR &= ~(_BV(ISC10));
+    }
 
 public:
-    static bool Get() EXTRA;
+    static bool Get()
+    {
+        return (PIND & _BV(3)) == 0;
+    }
 
     typedef void(*ButtonCallback)();
-    static void SetCallback(ButtonCallback callback) EXTRA;
+    static void SetCallback(ButtonCallback callback)
+    {
+        m_callback = callback;
+    }
 
     DECLARE_CLASS_ISR(INT1_vect);
 

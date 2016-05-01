@@ -8,6 +8,10 @@
 #include "common/protocols/protocols.h"
 #include "common/protocols/protocol_sparta.h"
 
+#include <avr/interrupt.h>
+#include <avr/sleep.h>
+#include <avr/wdt.h>
+
 namespace OpenMAOR
 {
 
@@ -19,16 +23,27 @@ class CFrameworkBase : public CPeripherals, public CProtocols, protected CSingle
 {
 protected:
     friend class CSingleton<CFrameworkBase>;
-    CFrameworkBase();
+    CFrameworkBase()
+        : uart(UartCallback)
+        , m_protocolSparta(&uart)
+    {
+        AddProtocol(&m_protocolSparta);
+    }
 
 public:
     CFrameworkBase(const CFrameworkBase&) = delete;
     CFrameworkBase& operator=(const CFrameworkBase&) = delete;
 
     //! Sleeps until some interrupt occurs, this highly decreases power usage
-    static void IdleSleep();
+    void IdleSleep()
+    {
+        set_sleep_mode(SLEEP_MODE_IDLE);
+        sleep_enable();
+        sleep_cpu();
+        sleep_disable();
+    }
     //! In interrupt driven programs, call this when everything is configured and you want to halt the main() function
-    static inline void InterruptDriven()
+    void InterruptDriven()
     {
         while (true)
         {
@@ -40,7 +55,7 @@ private:
     static void UartCallback(uint8_t data);
 
 public:
-    CAsyncUart uart;
+    CUart uart;
 
 private:
     Protocols::CProtocolSparta m_protocolSparta;

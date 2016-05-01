@@ -4,14 +4,13 @@
 #include <util/delay.h>
 #include <stdint.h>
 
-#include "common/extra_section.h"
-
 namespace OpenMAOR
 {
 class CPeripherals;
 
 namespace Peripherals
 {
+// TODO: This is untested!
 
 /**
  * \class CLineSensor
@@ -21,10 +20,19 @@ class CLineSensor
 {
 private:
     friend class CLineSensors;
-    CLineSensor(volatile uint8_t& ddr, volatile uint8_t& port, volatile uint8_t& pin, uint8_t bit) EXTRA;
+    CLineSensor(volatile uint8_t& ddr, volatile uint8_t& port, volatile uint8_t& pin, uint8_t bit)
+        : m_pin(pin)
+        , m_bit(bit)
+    {
+        ddr &= ~(_BV(m_bit));
+        port &= ~(_BV(m_bit));
+    }
 
 public:
-    bool Get() EXTRA;
+    bool Get()
+    {
+        return (m_pin & _BV(m_bit)) != 0;
+    }
 
 private:
     volatile uint8_t& m_pin;
@@ -39,7 +47,7 @@ class CLineSensors
 {
 private:
     friend class OpenMAOR::CPeripherals;
-    CLineSensors() EXTRA
+    CLineSensors()
     : m_lineSensors{
         CLineSensor(DDRB, PORTB, PINB, 1),
         CLineSensor(DDRD, PORTD, PIND, 7),
@@ -51,12 +59,12 @@ private:
     }
 
 public:
-    CLineSensor& operator[](uint8_t index) EXTRA
+    CLineSensor& operator[](uint8_t index)
     {
         return m_lineSensors[index];
     }
 
-    void Enable(bool enable) EXTRA
+    void Enable(bool enable)
     {
         if (enable)
         {

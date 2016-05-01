@@ -8,8 +8,6 @@
 #include "common/peripherals/sonar.h"
 #include "common/peripherals/adc.h"
 
-#include "common/extra_section.h"
-
 namespace OpenMAOR
 {
 

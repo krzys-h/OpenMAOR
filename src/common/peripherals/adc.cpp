@@ -7,15 +7,11 @@ namespace OpenMAOR
 namespace Peripherals
 {
 
-CADC::CADC()
-{
-    ADMUX = (1<<REFS0)|(1<<REFS1) | 0b01101;
-	ADCSRA|=(1<<ADEN)|(1<<ADATE)|(1<<ADIE)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);
-	//preskaler 128 - 125kHz@16MHz, wlaczone przerwania, konwersja caigla
+uint16_t CADC::m_measurements[TOTAL_ADC_CHANNELS];
 
-    ADCSRA |= (1<<ADEN);
-    ADCSRA |= (1<<ADSC);
-}
+uint8_t CADC::m_currentChannel = 0;
+uint16_t CADC::m_measuredTotal = 0;
+uint8_t CADC::m_measuredCount = 0;
 
 /*
  * przy takiej ilosci pomiarow (przy zalozonym trybie pracy ADC)
@@ -48,17 +44,6 @@ CLASS_ISR(CADC, ADC_vect)
         ADCSRA |= (1<<ADEN);
         ADCSRA |= (1<<ADSC);
     }
-}
-
-uint16_t CADC::m_measurements[TOTAL_ADC_CHANNELS];
-
-uint8_t CADC::m_currentChannel = 0;
-uint16_t CADC::m_measuredTotal = 0;
-uint8_t CADC::m_measuredCount = 0;
-
-uint16_t CADC::Get(ADCChannel channel)
-{
-    return m_measurements[channel];
 }
 
 } // namespace Peripherals

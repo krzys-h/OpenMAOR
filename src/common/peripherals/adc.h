@@ -17,7 +17,15 @@ class CADC
 {
 private:
     friend class OpenMAOR::CPeripherals;
-    CADC();
+    CADC()
+    {
+        ADMUX = (1<<REFS0)|(1<<REFS1) | 0b01101;
+        ADCSRA|=(1<<ADEN)|(1<<ADATE)|(1<<ADIE)|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);
+        //preskaler 128 - 125kHz@16MHz, wlaczone przerwania, konwersja caigla
+
+        ADCSRA |= (1<<ADEN);
+        ADCSRA |= (1<<ADSC);
+    }
 
 public:
     /**
@@ -36,7 +44,10 @@ public:
     };
 
     //! Return a value from given ADC channel. Keep in mind this value is averaged already.
-    static uint16_t Get(ADCChannel channel);
+    uint16_t Get(ADCChannel channel)
+    {
+        return m_measurements[channel];
+    }
 
     DECLARE_CLASS_ISR(ADC_vect);
 
