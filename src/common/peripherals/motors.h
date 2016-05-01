@@ -40,7 +40,7 @@ private:
     }
 
 public:
-    static const uint16_t MAX_SPEED = 1023;
+    static const int16_t MAX_SPEED = 1023;
 
     static void SetLeft(int16_t value)
     {
@@ -131,16 +131,6 @@ public:
         return m_speedRight;
     }
 
-    // TODO: Doesn't this overflow? :/
-    static int16_t PercentageToSpeed(int8_t percentage)
-    {
-        return percentage * MAX_SPEED / 100;
-    }
-    static int8_t SpeedToPercentage(int16_t speed)
-    {
-        return speed * 100 / MAX_SPEED;
-    }
-
 private:
     static int16_t m_speedLeft;
     static int16_t m_speedRight;
@@ -150,9 +140,9 @@ private:
     static void SetPWM_A(uint16_t value) { OCR1A = value; }
     static void StopPWM_A() { TCCR1A &= ~(1<<COM1A1); }
 
-    static void StartPWM_B() { TCCR1B |= (1<<COM1B1); }
+    static void StartPWM_B() { TCCR1A |= (1<<COM1B1); }
     static void SetPWM_B(uint16_t value) { OCR1B = value; }
-    static void StopPWM_B() { TCCR1B &= ~(1<<COM1B1); }
+    static void StopPWM_B() { TCCR1A &= ~(1<<COM1B1); }
 };
 
 } // namespace Peripherals

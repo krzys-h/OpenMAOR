@@ -1,1 +1,6 @@
-This is still an early work in progress version, readme will be added later!
+OpenMAOR
+========
+
+Open source firmware for programming MAOR-12T robot in C++
+
+TODO: write readme

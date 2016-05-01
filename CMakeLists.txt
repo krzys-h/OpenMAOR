@@ -33,3 +33,8 @@ add_executable(${PROJECT_NAME}-bootloader.elf ${BOOTLOADER_SRC})
 target_link_libraries(${PROJECT_NAME}-bootloader.elf ${PROJECT_NAME}-framework)
 avr_target_configure_as_bootloader(${PROJECT_NAME}-bootloader.elf)
 avr_target_configure(${PROJECT_NAME}-bootloader.elf)
+
+add_custom_target(program
+	COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/program.sh -b ${PROJECT_NAME}-bootloader.hex
+	DEPENDS ${PROJECT_NAME}-bootloader.hex
+)

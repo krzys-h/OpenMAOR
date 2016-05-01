@@ -25,7 +25,7 @@ const int ADC_MEASUREMENT_COUNT = 38;
 
 CLASS_ISR(CADC, ADC_vect)
 {
-    m_measuredCount += ADC;
+    m_measuredTotal += ADC;
     if (++m_measuredCount == ADC_MEASUREMENT_COUNT)
     {
         ADCSRA &= ~(1<<ADEN); // teoretycznie zapobiega "mieszaniu sie" kanalow

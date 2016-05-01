@@ -44,7 +44,7 @@ public:
     };
 
     //! Return a value from given ADC channel. Keep in mind this value is averaged already.
-    uint16_t Get(ADCChannel channel)
+    static uint16_t Get(ADCChannel channel)
     {
         return m_measurements[channel];
     }

@@ -25,13 +25,13 @@ public:
     void Run()
     {
         led.Set(false);
-        uart.SendString("\e[2J\e[H"); // czyszczenie terminala (+ kursor w lewy górny róg)
-        for(uint8_t i = 0; i < 4*2; i++)
+        //uart.SendString("\e[2J\e[H"); // czyszczenie terminala (+ kursor w lewy górny róg)
+        for (uint8_t i = 0; i < 2*2; i++)
         {
             led.Toggle();
             timer.Sleep(100);
         }
-        uart.SendString("Bootloader INIT!\r\n");
+        //uart.SendString("Bootloader INIT!\r\n");
         button.SetCallback([]() {
             m_instance->StartProgram();
         });
@@ -41,16 +41,6 @@ public:
 
     void StartProgram()
     {
-        // Resetujemy porty
-        DDRA = 0xFF;
-        DDRB = 0xFF;
-        DDRC = 0xFF;
-        DDRD = 0xFF;
-        PORTA = 0x00;
-        PORTB = 0x00;
-        PORTC = 0x00;
-        PORTD = 0x00;
-
         // Resetujemy przerwania
         cli();
         MoveInterrupts(false);
@@ -93,11 +83,6 @@ CBootloader* CBootloader::m_instance = nullptr;
 
 int main()
 {
-    DDRA = 0xFF;
-    DDRB = 0xFF;
-    DDRC = 0xFF;
-    DDRD = 0xFF;
-
     OpenMAOR::Bootloader::CBootloader bootloader;
     bootloader.Run();
 }

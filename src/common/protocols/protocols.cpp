@@ -12,7 +12,7 @@ bool CProtocols::RecieveData(uint8_t byte)
 {
     if (m_currentProtocol != nullptr)
     {
-        if(!m_currentProtocol->RecieveData(byte))
+        if (!m_currentProtocol->RecieveData(byte))
         {
             m_currentProtocol = nullptr;
         }

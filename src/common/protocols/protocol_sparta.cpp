@@ -34,11 +34,11 @@ void ProcessPacketNormal(SpartaCommand cmd, uint8_t param)
             break;
 
         case CMD_SILNIK_LEWY:
-            CFrameworkBase::motors.SetLeft(::CMotors::PercentageToSpeed(param-100));
+            // TODO: CFrameworkBase::motors.SetLeft(::CMotors::PercentageToSpeed(param-100));
             break;
 
         case CMD_SILNIK_PRAWY:
-            CFrameworkBase::motors.SetRight(::CMotors::PercentageToSpeed(param-100));
+            // TODO: CFrameworkBase::motors.SetRight(::CMotors::PercentageToSpeed(param-100));
             break;
 
         case CMD_SILNIK_STOP:
@@ -116,15 +116,15 @@ void ProcessPacketStatus(uint8_t motorLeft, uint8_t motorRight)
 {
     if (motorLeft != SPARTA_STATUS_NO_MOTOR_CHANGE)
     {
-        CFrameworkBase::motors.SetLeft(::CMotors::PercentageToSpeed(motorLeft-100));
+        CFrameworkBase::motors.SetLeft((((int16_t) motorLeft)-100) * 10); // not precise but meh
     }
     if (motorRight != SPARTA_STATUS_NO_MOTOR_CHANGE)
     {
-        CFrameworkBase::motors.SetRight(::CMotors::PercentageToSpeed(motorRight-100));
+        CFrameworkBase::motors.SetRight((((int16_t) motorRight)-100) * 10); // not precise but meh
     }
 
     uint8_t data[12];
-    data[0] = 0xFF;
+    data[0] = CFrameworkBase::adc.Get(CADC::ADCChannel::ADC_BATTERY) / 10;
     CFrameworkBase::lineSensor.Enable(true);
     data[1] =
         (CFrameworkBase::lineSensor[0].Get() << 0) |
@@ -145,8 +145,8 @@ void ProcessPacketStatus(uint8_t motorLeft, uint8_t motorRight)
     data[7] = (CFrameworkBase::adc.Get(CADC::ADCChannel::ADC_CUSTOM0) >> 2);
     data[8] = (CFrameworkBase::adc.Get(CADC::ADCChannel::ADC_CUSTOM1) >> 2);
     data[9] = (CFrameworkBase::adc.Get(CADC::ADCChannel::ADC_CUSTOM2) >> 2);
-    data[10] = ::CMotors::SpeedToPercentage(CFrameworkBase::motors.GetLeft())+100;
-    data[11] = ::CMotors::SpeedToPercentage(CFrameworkBase::motors.GetRight())+100;
+    data[10] = CFrameworkBase::motors.GetLeft() / 10;
+    data[11] = CFrameworkBase::motors.GetRight() / 10;
 
     CProtocolSparta::SendPacketStatus(CMD_STAN_CZUJNIKI, data);
 }
@@ -200,7 +200,7 @@ void CProtocolSparta::SendPacketStatus(SpartaRobotID senderid, SpartaCommand cmd
     CUart::Send(senderid);
     CUart::Send(cmd);
     uint8_t checksum = 0;
-    for(uint8_t i = 0; i < 12; i++)
+    for (uint8_t i = 0; i < 12; i++)
     {
         checksum += params[i];
         CUart::Send(params[i]);
