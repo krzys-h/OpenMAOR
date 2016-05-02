@@ -37,8 +37,6 @@ inline uint8_t SPIRead()
     return SPIReadWrite(0x00);
 }
 
-// TODO: This code is untested!
-
 /**
  * \class CSonar
  * \brief Communication with sonar controller via SPI

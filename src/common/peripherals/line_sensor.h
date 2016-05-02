@@ -10,7 +10,6 @@ class CPeripherals;
 
 namespace Peripherals
 {
-// TODO: This is untested!
 
 /**
  * \class CLineSensor
@@ -31,7 +30,7 @@ private:
 public:
     bool Get()
     {
-        return (m_pin & _BV(m_bit)) != 0;
+        return (m_pin & _BV(m_bit)) == 0;
     }
 
 private:

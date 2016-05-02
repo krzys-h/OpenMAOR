@@ -1,7 +1,5 @@
 #include "common/peripherals/motors.h"
 
-// TODO: Test this code
-
 namespace OpenMAOR
 {
 namespace Peripherals

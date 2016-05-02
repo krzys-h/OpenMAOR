@@ -1,7 +1,5 @@
 #include "common/peripherals/adc.h"
 
-// TODO: This code is untested!
-
 namespace OpenMAOR
 {
 namespace Peripherals
