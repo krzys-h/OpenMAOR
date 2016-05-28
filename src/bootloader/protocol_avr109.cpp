@@ -1,5 +1,6 @@
 #include "bootloader/protocol_avr109.h"
 #include "common/uart.h"
+#include "common/framework.h"
 
 #include <avr/boot.h>
 #include <avr/pgmspace.h>
@@ -166,7 +167,12 @@ void ProcessPacket(AVR109Command command)
             break;
 
         case PROGRAMMING_ENTER:
+            CFrameworkBase::led.Set(true, true, false, false);
+            CUart::Send(OK);
+            break;
+
         case PROGRAMMING_LEAVE:
+            CFrameworkBase::led.Set(false, false, false, false);
             CUart::Send(OK);
             break;
 
@@ -199,6 +205,8 @@ void ProcessPacket(AVR109Command command)
 
         case START_MEMORY_READ:
         case START_MEMORY_WRITE:
+            CFrameworkBase::led[2].Toggle();
+            CFrameworkBase::led[3].Toggle();
             StartMemoryOperation(command, static_cast<AVR109MemoryType>(buffer[3]), (buffer[1] << 8) | buffer[2]);
             break;
 

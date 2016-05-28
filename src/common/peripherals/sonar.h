@@ -50,10 +50,10 @@ private:
         DDRC |= _BV(7); // CS
         PORTC |= _BV(7);
 
-        DDRB |= _BV(4); // SS
+        /*DDRB |= _BV(4); // SS
         DDRB &= ~(_BV(5)); // MOSI
         DDRB &= ~(_BV(6)); // MISO
-        DDRB |= _BV(7); // SCK
+        DDRB |= _BV(7); // SCK*/
         SPIOff();
     }
 

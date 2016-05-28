@@ -38,7 +38,7 @@ set(CMAKE_CXX_COMPILER_FORCED TRUE)
 
 set(PRINTF_LIB "")
 # Mozna sprobowac odkomentowac jesli bedzie nam brakowac miejsca
-#set(PRINTF_LIB "-Wl,-u,vfprintf -lprintf_min")
+#set(PRINTF_LIB "-Wl,-u,vfprintf -lprintf_flt")
 # Mozna zmienic na printf_flt jesli bedzie trzeba, ale mam nadzieje ze nie
 
 # https://github.com/acristoffers/CMake-AVR/blob/master/Blink/CMakeLists.txt#L66-80
